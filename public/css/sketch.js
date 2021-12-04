@@ -59,15 +59,16 @@ let boat;
 let island;
 let enemy;
 
+
 function setup() {
   var canvas = createCanvas(screenx, screeny);
   canvas.position(0, 50);
   console.log("its working");
 
   //load images
-  boat = loadImage("img/boat.png");
-  island = loadImage("img/island.png");
-  enemy = loadImage("img/enemy.png");
+  boat = loadImage('https://icecube-eu-286.icedrive.io/download?p=QVVZu1.VGZl3YcNk5nw0WgFT6KudjsBRogSMWGg5a4L1OJrPC1keRUD.JuHiaggOJLqLf48fy8a54NLa48J1jIlN6h.23AfRR9OqXPzIA1P7hMvvKQes7wkqozNWnupZnYzoxrSVWYV0ckBCOGyJR6aidDoBOUpHyyzpYIz_KRH.EAPVtNjZNHBBpB0EGcfB');
+  island = loadImage('https://icecube-eu-286.icedrive.io/download?p=QVVZu1.VGZl3YcNk5nw0WgFT6KudjsBRogSMWGg5a4LPjnnLbGnhU0Mu5rogU4PDJLqLf48fy8a54NLa48J1jIlN6h.23AfRR9OqXPzIA1OEwdaXreYehPBYF1GllKadzrxq44I6Y7kWiC0nzIqMCgAszEZx90n9PC.sO2ldDiObupb.1B16t.ktGfcwS_sj');
+  enemy = loadImage('https://icecube-eu-286.icedrive.io/download?p=QVVZu1.VGZl3YcNk5nw0WgFT6KudjsBRogSMWGg5a4L0vUPKzdR5vu0fkUk8mBfMJLqLf48fy8a54NLa48J1jIlN6h.23AfRR9OqXPzIA1NM8CH.hxWJahmRiiLFWOUH3CsGUae6ye47KKZ_h.jPvsSeopyIITNU7pXnkgdddGsYfPKnOE.hRvDGWX_8vhlG');
 
   //islands - gives random values to x and y
   rx1 = random(ax1);

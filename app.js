@@ -2,10 +2,11 @@
 const express = require('express');
 const app = express();
 
+
 //2 - seteamos urlencoded para capturar os dados do formulário
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
-
+app.use("/public", express.static('public'));
 
 //3 - invocar o dotenv
 const dotenv = require('dotenv');
