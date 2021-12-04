@@ -137,6 +137,12 @@ app.get('/logout', function (req, res) {
 	})
 });
 
+//conectar p5.js
+const script = express();
+path = require('path');
+script.use(express.static(path.join('/public')));
+
+
 
 //console.log(__dirname);
 app.listen(3001,(req, res)=>{
