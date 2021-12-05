@@ -44,19 +44,44 @@ app.get('/register', (req, res)=>{
 
 //10 - Registo
 app.post('/register', async (req, res)=>{
-     const user = req.body.user;
-     const name = req.body.name;
-     const rol = req.body.rol;
-     const pass = req.body.pass;
+     
+	 const { name, email, pass, passwordConfirm} = req.body;
      let passwordHaash = await bcryptjs.hash(pass,8);
-     connection.query('INSERT INTO users SET ?', {user:user, name:name, rol:rol, pass:passwordHaash}, async(error, results)=>{
+
+	 connection.query('SELECT email FROM users WHERE email = ?', [email], async (error, results) => {
+        if(error){
+            console.log(error);
+        }
+        if(results.length > 0) {
+            return res.render('register', {
+                alert: true, 
+                alertTitle: "Email in use",
+                alertMessage: "Oops! Seems like that email is already in use",
+                alertIcon: 'success',
+                showConfirmButton: false,
+                timer:1500,
+                ruta:''
+            })
+        } else if( pass !== passwordConfirm){
+            return res.render('register', {
+                alert: true, 
+                alertTitle: "Does not match",
+                alertMessage: "Passwords do not match",
+                alertIcon: 'success',
+                showConfirmButton: false,
+                timer:1500,
+                ruta:''
+            });
+        }
+	
+     connection.query('INSERT INTO users SET ?', {name:name, email:email, pass:passwordHaash}, async(error, results)=>{
         if(error){
              console.log(error);
         }else{
             res.render('register',{
                 alert: true, 
                 alertTitle: "Registration",
-                alertMessage: "Successful REgistration!",
+                alertMessage: "Successful Registration!",
                 alertIcon: 'success',
                 showConfirmButton: false,
                 timer:1500,
@@ -64,19 +89,20 @@ app.post('/register', async (req, res)=>{
             })
         }
      })
+	});
 })
 //11 - Metodo para la autenticacion
 app.post('/auth', async (req, res)=> {
-	const user = req.body.user;
+	const email = req.body.email;
 	const pass = req.body.pass;    
     let passwordHaash = await bcryptjs.hash(pass, 8);	
-    if (user && pass) {
-		connection.query('SELECT * FROM users WHERE user = ?', [user], async (error, results, fields)=> {
+    if (email && pass) {
+		connection.query('SELECT * FROM users WHERE email = ?', [email], async (error, results, fields)=> {
 			if( results.length == 0 || !(await bcryptjs.compare(pass, results[0].pass)) ) {    
 				res.render('login', {
                         alert: true,
                         alertTitle: "Error",
-                        alertMessage: "USUARIO y/o PASSWORD incorrectas",
+                        alertMessage: "Incorrect user or password",
                         alertIcon:'error',
                         showConfirmButton: true,
                         timer: false,
@@ -85,14 +111,14 @@ app.post('/auth', async (req, res)=> {
 				
 				//Mensaje simple y poco vistoso
                 //res.send('Incorrect Username and/or Password!');				
-			} else {         
-				//creamos una var de session y le asignamos true si INICIO SESSION       
+			} else {    
+				//criamos uma var de sessao, set true se iniciou sessao        
 				req.session.loggedin = true;                
 				req.session.name = results[0].name;
 				res.render('login', {
 					alert: true,
-					alertTitle: "Conexión exitosa",
-					alertMessage: "¡LOGIN CORRECTO!",
+					alertTitle: "Conexão Efetuada",
+					alertMessage: "WELCOME TO PIRATE TREASURE",
 					alertIcon:'success',
 					showConfirmButton: false,
 					timer: 1500,
@@ -102,7 +128,7 @@ app.post('/auth', async (req, res)=> {
 			res.end();
 		});
 	} else {	
-		res.send('Please enter user and Password!');
+		res.send('Please enter email and Password!');
 		res.end();
 	}
 });
@@ -116,7 +142,7 @@ app.get('/', (req, res)=> {
 	} else {
 		res.render('index',{
 			login:false,
-			name:'Debe iniciar sesión',			
+			name:'Hello! Please Log In or Register',			
 		});				
 	}
 	res.end();
@@ -154,7 +180,7 @@ con.connect(function(err) {
 		console.log(err);
 	}
 
-	var sql = "INSERT INTO zona_inimigo (`id`, `bx`, `by`) VALUES ?";
+	var sql = "INSERT INTO zona_inimigo (`id`, `ex`, `ey`) VALUES ?";
 	var values = [
 		[1, 300, 0],
 		[1, 300, 75],		
@@ -248,14 +274,14 @@ var bodyParser = require('body-parser')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(express.json())
 
-let zone = 1;
+var zone = 1;
 app.post('/insertZona', (req, res)=>{
-	let zona = req.body.zona;
+	var zona = req.body.zona;
 
-	zone=zona;
-
-	console.log(zone);
+	
+	console.log(zona);
 
 	res.send(zone);
 })
@@ -264,6 +290,8 @@ app.post('/insertZona', (req, res)=>{
 //Selecionar x e y da zona 1
 app.get('/islandXposition', (req, res)=>{
 	
+	console.log(zone);
+
 	let sql = "SELECT ax FROM zona_island WHERE id= "+1+" ORDER BY RAND() LIMIT 1";
 	con.query(sql,(err,result)=>{
 		if(err) throw err;
@@ -276,6 +304,33 @@ app.get('/islandXposition', (req, res)=>{
 })
 app.get('/islandYposition', (req, res)=>{
 	let sql = "SELECT ay FROM zona_island WHERE id= "+1+" AND (SELECT ax FROM zona_island WHERE id= "+1+" ORDER BY RAND() LIMIT 1 ) ORDER BY RAND() LIMIT 1"
+	con.query(sql,(err,result)=>{
+		if(err) throw err;
+		
+		console.log(result)
+		
+		res.send(result);
+		
+		});
+})
+
+//positions for enemy
+app.get('/enemyXposition', (req, res)=>{
+	
+	console.log(zone);
+
+	let sql = "SELECT ex FROM zona_inimigo WHERE id= "+1+" ORDER BY RAND() LIMIT 1";
+	con.query(sql,(err,result)=>{
+		if(err) throw err;
+		
+		console.log(result)
+		
+		res.send(result);
+		
+		});
+})
+app.get('/enemyYposition', (req, res)=>{
+	let sql = "SELECT ey FROM zona_inimigo WHERE id= 1 AND (SELECT ex FROM zona_inimigo WHERE id= 1 ORDER BY RAND() LIMIT 1 ) ORDER BY RAND() LIMIT 1"
 	con.query(sql,(err,result)=>{
 		if(err) throw err;
 		

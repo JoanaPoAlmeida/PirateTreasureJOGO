@@ -59,8 +59,12 @@ let enemy;
 
 function preload(){
 
-  let zona = 2;
-  httpPost('/insertZona',zona);
+  var zona = 2;
+  httpPost('/insertZona', zona, (resposta)=>{
+
+  });
+
+  //ISLANDS
   //zona 1
   loadJSON('/islandXposition', (axPosition)=>{
     if(axPosition.length>0){
@@ -70,9 +74,9 @@ function preload(){
           alert("no island x position");
         };
   })
-  loadJSON('/islandYposition', (axPosition)=>{
-    if(axPosition.length>0){
-      ry1=axPosition[0].ay;
+  loadJSON('/islandYposition', (ayPosition)=>{
+    if(ayPosition.length>0){
+      ry1=ayPosition[0].ay;
       console.log("this is ry1  ", ry1);
         }else{
           alert("no island y position");
@@ -80,6 +84,10 @@ function preload(){
   })
 
   //zona 11
+  zona=11;
+  httpPost('/insertZona', zona, (resposta)=>{
+
+  });
   loadJSON('/islandXposition', (axPosition)=>{
     if(axPosition.length>0){
       rx11=axPosition[0].ax;
@@ -96,6 +104,25 @@ function preload(){
           alert("no island y position");
         };
   })
+
+  //ENEMIES
+  //zona 1
+  loadJSON('/enemyXposition', (bxPosition)=>{
+    if(bxPosition.length>0){
+      ex1=bxPosition[0].ex;
+      console.log("this is rx1  ", rx1);
+        }else{
+          alert("no enemy x position");
+        };
+  })
+  loadJSON('/enemyYposition', (byPosition)=>{
+    if(byPosition.length>0){
+      ey1=byPosition[0].ey;
+      console.log("this is ry1  ", ey1);
+        }else{
+          alert("no enemy y position");
+        };
+  })
 }
 
 function setup() {
@@ -104,9 +131,9 @@ function setup() {
   console.log("its working");
 
   //load images
-  boat = loadImage('https://icecube-eu-286.icedrive.io/download?p=QVVZu1.VGZl3YcNk5nw0WgFT6KudjsBRogSMWGg5a4L1OJrPC1keRUD.JuHiaggOJLqLf48fy8a54NLa48J1jIlN6h.23AfRR9OqXPzIA1P7hMvvKQes7wkqozNWnupZnYzoxrSVWYV0ckBCOGyJR6aidDoBOUpHyyzpYIz_KRH.EAPVtNjZNHBBpB0EGcfB');
-  island = loadImage('https://icecube-eu-286.icedrive.io/download?p=QVVZu1.VGZl3YcNk5nw0WgFT6KudjsBRogSMWGg5a4LPjnnLbGnhU0Mu5rogU4PDJLqLf48fy8a54NLa48J1jIlN6h.23AfRR9OqXPzIA1OEwdaXreYehPBYF1GllKadzrxq44I6Y7kWiC0nzIqMCgAszEZx90n9PC.sO2ldDiObupb.1B16t.ktGfcwS_sj');
-  enemy = loadImage('https://icecube-eu-286.icedrive.io/download?p=QVVZu1.VGZl3YcNk5nw0WgFT6KudjsBRogSMWGg5a4L0vUPKzdR5vu0fkUk8mBfMJLqLf48fy8a54NLa48J1jIlN6h.23AfRR9OqXPzIA1NM8CH.hxWJahmRiiLFWOUH3CsGUae6ye47KKZ_h.jPvsSeopyIITNU7pXnkgdddGsYfPKnOE.hRvDGWX_8vhlG');
+  boat = loadImage('https://i.ibb.co/vkLDdmN/boat.png');
+  island = loadImage('https://i.ibb.co/FmX47db/enemy.png');
+  enemy = loadImage('https://i.ibb.co/Ydh3Crs/island.png');
 
   //islands - gives random values to x and y
   //rx1
@@ -119,8 +146,7 @@ function setup() {
   ry4 = random(ay4);
 
   //enemies - gives random values to x and y
-  ex1 = random(bx1);
-  ey1 = random(by1);
+ 
   ex2 = random(bx2);
   ey2 = random(by2);
   ex3 = random(bx3);

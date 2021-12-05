@@ -10,22 +10,21 @@
 <body>
     
     <div class=login-form>
-        <h2>Register con Node JS</h2>
+        <h2>Register</h2>
         <form action="/register" method="POST">
-            <label for="user">User name</label>
-            <input type="text" name="user" required >
 
-            <label for="name">Full name</label>
+            <label for="name">Name</label>
             <input type="text" name="name" required >
-
-            <label for="rol">Rol</label>
-            <select type="rol" name="rol" class="select-css" >
-                <option value="admin" selected>Admin </option>
-                <option value="data entry">Data Entry </option>
-            </select>
-
+            
+            <label for="email">Email Address</label>
+            <input type="email" name="email" required>
+            
             <label for="pass">Password</label>
             <input type="password" name="pass" required >
+
+            <label for="passwordConfirm">Confirm Password</label>
+            <input type="password" name="passwordConfirm">
+            
 
             <div style="display: inline;">
                 <a href="/" class="btn-cancel">Cancel</a><input type="submit" class="btn-save" value="Save">
@@ -35,6 +34,7 @@
         </form>
        
     </div>
+    
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <% if(typeof alert != "undefined"){ %>
         <script>
