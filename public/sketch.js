@@ -60,9 +60,7 @@ let enemy;
 function preload(){
 
   let zona = 2;
-  httpPost('/insertZona','text',zona,(resposta)=>{
-    console.log("Esta a enviar isto:"+ zona);
-  });
+  httpPost('/insertZona',zona);
   //zona 1
   loadJSON('/islandXposition', (axPosition)=>{
     if(axPosition.length>0){

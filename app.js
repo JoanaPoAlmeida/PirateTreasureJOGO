@@ -244,6 +244,10 @@ con.connect(function(err) {
 	  });
 })
 
+var bodyParser = require('body-parser')
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 let zone = 1;
 app.post('/insertZona', (req, res)=>{
@@ -260,7 +264,7 @@ app.post('/insertZona', (req, res)=>{
 //Selecionar x e y da zona 1
 app.get('/islandXposition', (req, res)=>{
 	
-	let sql = "SELECT ax FROM zona_island WHERE id= "+zona+"ORDER BY RAND() LIMIT 1";
+	let sql = "SELECT ax FROM zona_island WHERE id= "+1+" ORDER BY RAND() LIMIT 1";
 	con.query(sql,(err,result)=>{
 		if(err) throw err;
 		
@@ -271,7 +275,7 @@ app.get('/islandXposition', (req, res)=>{
 		});
 })
 app.get('/islandYposition', (req, res)=>{
-	let sql = "SELECT ay FROM zona_island WHERE id=1 ORDER BY RAND() LIMIT 1"
+	let sql = "SELECT ay FROM zona_island WHERE id= "+1+" AND (SELECT ax FROM zona_island WHERE id= "+1+" ORDER BY RAND() LIMIT 1 ) ORDER BY RAND() LIMIT 1"
 	con.query(sql,(err,result)=>{
 		if(err) throw err;
 		
