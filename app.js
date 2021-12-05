@@ -138,9 +138,152 @@ app.get('/logout', function (req, res) {
 	})
 });
 
-//conectar p5.js
-path = require('path');
-app.use(express.static('public'));
+
+//inserir posiçoes das zonas dos inimigos na base de dados
+const mysql = require("mysql");
+var con = mysql.createConnection({
+	host: process.env.DB_HOST,
+  	user: process.env.DB_USER,
+  	password:process.env.DB_PASSWORD,
+  	database: process.env.DB_DATABASE,
+  });
+
+  
+con.connect(function(err) {
+	if(err){
+		console.log(err);
+	}
+
+	var sql = "INSERT INTO zona_inimigo (`id`, `bx`, `by`) VALUES ?";
+	var values = [
+		[1, 300, 0],
+		[1, 300, 75],		
+		[1, 300, 150],
+		[1, 300, 220],
+		[2, 0, 225],	
+		[2, 0, 300],	
+		[2, 0, 375],	
+		[2, 75, 225],		
+		[2, 75, 300],		
+		[2, 75, 375],
+		[3, 150, 375],
+		[3, 150, 450],
+		[3, 150, 525],
+		[3, 225, 375],
+		[3, 225, 450],
+		[3, 225, 525],
+		[4, 375, 225],
+		[4, 375, 300],
+		[4, 450, 225],
+		[4, 450, 300],
+		[4, 520, 225],
+		[4, 520, 300],
+		[5, 150, 150],
+		[5, 150, 225],
+		[5, 225, 150],
+		[5, 225, 225],
+		[6, 525, 375],
+		[6, 525, 450]
+	];
+	con.query(sql, [values], function (err, result) {
+		if(err){
+			console.log(err);
+		}
+		console.log("zonas de inimigos inseridas " + result.affectedRow);
+	  });
+})
+
+var con = mysql.createConnection({
+	host: process.env.DB_HOST,
+  	user: process.env.DB_USER,
+  	password:process.env.DB_PASSWORD,
+  	database: process.env.DB_DATABASE,
+  });
+
+con.connect(function(err) {
+	if(err){
+		console.log(err);
+	}
+
+	var sql = "INSERT INTO zona_island (`id`, `ax`, `ay`) VALUES ?";
+	var values = [
+		[1, 150, 0],
+		[1, 150, 75],		
+		[1, 225, 0],
+		[1, 225, 75],
+		[11, 0, 150],	
+		[11, 75, 150],	
+		[2, 375, 0],	
+		[2, 375, 75],		
+		[2, 375, 150],		
+		[2, 450, 0],
+		[2, 450, 75],
+		[2, 450, 150],
+		[2, 525, 0],
+		[2, 525, 75],
+		[2, 525, 150],
+		[3, 0, 450],
+		[3, 0, 525],
+		[3, 75, 450],
+		[3, 75, 525],
+		[4, 300, 375],
+		[4, 300, 450],
+		[4, 300, 525],
+		[4, 375, 375],
+		[4, 375, 450],
+		[4, 375, 525],
+		[4, 450, 375],
+		[4, 450, 450],
+		[4, 450, 525]
+	];
+	con.query(sql, [values], function (err, result) {
+		if(err){
+			console.log(err);
+		}
+		console.log("zonas de ilhas inseridas " + result.affectedRow);
+	  });
+})
+
+
+let zone = 1;
+app.post('/insertZona', (req, res)=>{
+	let zona = req.body.zona;
+
+	zone=zona;
+
+	console.log(zone);
+
+	res.send(zone);
+})
+
+//Select random numbers for the positions
+//Selecionar x e y da zona 1
+app.get('/islandXposition', (req, res)=>{
+	
+	let sql = "SELECT ax FROM zona_island WHERE id= "+zona+"ORDER BY RAND() LIMIT 1";
+	con.query(sql,(err,result)=>{
+		if(err) throw err;
+		
+		console.log(result)
+		
+		res.send(result);
+		
+		});
+})
+app.get('/islandYposition', (req, res)=>{
+	let sql = "SELECT ay FROM zona_island WHERE id=1 ORDER BY RAND() LIMIT 1"
+	con.query(sql,(err,result)=>{
+		if(err) throw err;
+		
+		console.log(result)
+		
+		res.send(result);
+		
+		});
+})
+
+
+
 
 
 

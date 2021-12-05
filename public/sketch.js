@@ -14,9 +14,7 @@ const screenx = 600;
 const screeny = 600;
 
 //island positions
-//zona 1
-const ax1 = [150, 225];
-const ay1 = [0, 75];
+
 //zona 1.1
 const ax11 = [0, 75];
 const ay11 = [150];
@@ -59,6 +57,48 @@ let boat;
 let island;
 let enemy;
 
+function preload(){
+
+  let zona = 2;
+  httpPost('/insertZona','text',zona,(resposta)=>{
+    console.log("Esta a enviar isto:"+ zona);
+  });
+  //zona 1
+  loadJSON('/islandXposition', (axPosition)=>{
+    if(axPosition.length>0){
+      rx1=axPosition[0].ax;
+      console.log("this is rx1  ", rx1);
+        }else{
+          alert("no island x position");
+        };
+  })
+  loadJSON('/islandYposition', (axPosition)=>{
+    if(axPosition.length>0){
+      ry1=axPosition[0].ay;
+      console.log("this is ry1  ", ry1);
+        }else{
+          alert("no island y position");
+        };
+  })
+
+  //zona 11
+  loadJSON('/islandXposition', (axPosition)=>{
+    if(axPosition.length>0){
+      rx11=axPosition[0].ax;
+      console.log("this is rx11  ", rx11);
+        }else{
+          alert("no island x position");
+        };
+  })
+  loadJSON('/islandYposition', (ayPosition)=>{
+    if(ayPosition.length>0){
+      ry11=ayPosition[0].ay;
+      console.log("this is ry11  ", ry11);
+        }else{
+          alert("no island y position");
+        };
+  })
+}
 
 function setup() {
   var canvas = createCanvas(screenx, screeny);
@@ -71,10 +111,8 @@ function setup() {
   enemy = loadImage('https://icecube-eu-286.icedrive.io/download?p=QVVZu1.VGZl3YcNk5nw0WgFT6KudjsBRogSMWGg5a4L0vUPKzdR5vu0fkUk8mBfMJLqLf48fy8a54NLa48J1jIlN6h.23AfRR9OqXPzIA1NM8CH.hxWJahmRiiLFWOUH3CsGUae6ye47KKZ_h.jPvsSeopyIITNU7pXnkgdddGsYfPKnOE.hRvDGWX_8vhlG');
 
   //islands - gives random values to x and y
-  rx1 = random(ax1);
-  ry1 = random(ay1);
-  rx11 = random(ax11);
-  ry11 = random(ay11);
+  //rx1
+  
   rx2 = random(ax2);
   ry2 = random(ay2);
   rx3 = random(ax3);
