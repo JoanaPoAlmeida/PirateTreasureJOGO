@@ -1,28 +1,28 @@
-//1 - invocamos express
+//1 - importamos express
 const express = require('express');
 const app = express();
 
 
-//2 - seteamos urlencoded para capturar os dados do formulário
+//2 - set urlencoded para guardar os dados do formulário
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 app.use("/public", express.static('public'));
 
-//3 - invocar o dotenv
+//3 - importar o dotenv
 const dotenv = require('dotenv');
 dotenv.config({path:'./env/.env'});
 
-//4 - setear o diretorio publico
+//4 - set diretorio publico
 app.use('/resources',express.static('public'));
 app.use('/resources',express.static(__dirname + '/public'));
 
-//5 - estabelecer o motor de plantillas ejs
+//5 - estabelecer o ejs
 app.set('view engine','ejs');
 
-//6 - invocar modulo para fazer o caching, bcryptjs
+//6 - importar modulo para fazer o caching, bcryptjs
 const bcryptjs = require('bcryptjs');
 
-//7 - VAriaveis de sessão
+//7 - Variaveis de sessão
 const session = require('express-session');
 app.use(session({
     secret: 'secret',
@@ -91,7 +91,7 @@ app.post('/register', async (req, res)=>{
      })
 	});
 })
-//11 - Metodo para la autenticacion
+//11 - Metodo para autenticação
 app.post('/auth', async (req, res)=> {
 	const email = req.body.email;
 	const pass = req.body.pass;    
@@ -109,7 +109,6 @@ app.post('/auth', async (req, res)=> {
                         ruta: 'login'    
                     });
 				
-				//Mensaje simple y poco vistoso
                 //res.send('Incorrect Username and/or Password!');				
 			} else {    
 				//criamos uma var de sessao, set true se iniciou sessao        
@@ -117,7 +116,7 @@ app.post('/auth', async (req, res)=> {
 				req.session.name = results[0].name;
 				res.render('login', {
 					alert: true,
-					alertTitle: "Conexão Efetuada",
+					alertTitle: "Conection Successful",
 					alertMessage: "WELCOME TO PIRATE TREASURE",
 					alertIcon:'success',
 					showConfirmButton: false,
@@ -132,7 +131,7 @@ app.post('/auth', async (req, res)=> {
 		res.end();
 	}
 });
-//12 - Método para controlar que está auth en todas las páginas
+//12 - Método para controlar que está auth em todas as páginas
 app.get('/', (req, res)=> {
 	if (req.session.loggedin) {
 		res.render('index',{
@@ -149,7 +148,7 @@ app.get('/', (req, res)=> {
 });
 
 
-//función para limpiar la caché luego del logout
+//funçao para limpar a cache dps do logout
 app.use(function(req, res, next) {
     if (!req.user)
         res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
@@ -157,7 +156,7 @@ app.use(function(req, res, next) {
 });
 
  //13 - Logout
-//Destruye la sesión.
+//Destroi a sessao
 app.get('/logout', function (req, res) {
 	req.session.destroy(() => {
 	  res.redirect('/') // siempre se ejecutará después de que se destruya la sesión
@@ -276,23 +275,27 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.json())
 
-var zone = 1;
+//getting the number of the zone from sketch.js
+var izone = 1;
 app.post('/insertZona', (req, res)=>{
-	var zona = req.body.zona;
+	var zona = req.body;
 
-	
-	console.log(zona);
+	console.log("isto é a zona da ilha no insert: "+zona.zona);
+	izone=zona.zona
+	var reply = {
+		msg : 'its sending the island number'
+	}
 
-	res.send(zone);
+	res.send(reply);
 })
 
 //Select random numbers for the positions
-//Selecionar x e y da zona 1
+//ISLAND POSITIONS
 app.get('/islandXposition', (req, res)=>{
 	
-	console.log(zone);
+	console.log("island x position: "+izone);
 
-	let sql = "SELECT ax FROM zona_island WHERE id= "+1+" ORDER BY RAND() LIMIT 1";
+	let sql = "SELECT ax FROM zona_island WHERE id= "+izone+" ORDER BY RAND() LIMIT 1";
 	con.query(sql,(err,result)=>{
 		if(err) throw err;
 		
@@ -303,7 +306,8 @@ app.get('/islandXposition', (req, res)=>{
 		});
 })
 app.get('/islandYposition', (req, res)=>{
-	let sql = "SELECT ay FROM zona_island WHERE id= "+1+" AND (SELECT ax FROM zona_island WHERE id= "+1+" ORDER BY RAND() LIMIT 1 ) ORDER BY RAND() LIMIT 1"
+	console.log("island y position: "+izone);
+	let sql = "SELECT ay FROM zona_island WHERE id= "+izone+" ORDER BY RAND() LIMIT 1"
 	con.query(sql,(err,result)=>{
 		if(err) throw err;
 		
@@ -314,12 +318,27 @@ app.get('/islandYposition', (req, res)=>{
 		});
 })
 
+//NEW ZONE NUMBER FOR ENEMY
+
+var ezone=1;
+app.post('/insertZonaE', (req, res)=>{
+	var ezona = req.body;
+
+	console.log("isto é a zona do enemy no insert: "+ezona.ezona);
+	ezone=ezona.ezona
+	var reply = {
+		msg : 'its sending the enemy number'
+	}
+
+	res.send(reply);
+})
+
 //positions for enemy
 app.get('/enemyXposition', (req, res)=>{
 	
-	console.log(zone);
+	console.log("enemy x position: "+ezone);
 
-	let sql = "SELECT ex FROM zona_inimigo WHERE id= "+1+" ORDER BY RAND() LIMIT 1";
+	let sql = "SELECT ex FROM zona_inimigo WHERE id= "+ezone+" ORDER BY RAND() LIMIT 1";
 	con.query(sql,(err,result)=>{
 		if(err) throw err;
 		
@@ -330,7 +349,9 @@ app.get('/enemyXposition', (req, res)=>{
 		});
 })
 app.get('/enemyYposition', (req, res)=>{
-	let sql = "SELECT ey FROM zona_inimigo WHERE id= 1 AND (SELECT ex FROM zona_inimigo WHERE id= 1 ORDER BY RAND() LIMIT 1 ) ORDER BY RAND() LIMIT 1"
+
+	console.log("enemy y position: "+ezone);
+	let sql = "SELECT ey FROM zona_inimigo WHERE id= "+ezone+"  ORDER BY RAND() LIMIT 1"
 	con.query(sql,(err,result)=>{
 		if(err) throw err;
 		
