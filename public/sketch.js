@@ -13,40 +13,9 @@ const pontuacao = 0;
 const screenx = 600;
 const screeny = 600;
 
-//island positions
 
-//zona 1.1
-//const ax11 = [0, 75];
-//const ay11 = [150];
-////zona 2
-//const ax2 = [375, 450, 525];
-//const ay2 = [0, 75, 150];
-////zona 3
-//const ax3 = [0, 75];
-//const ay3 = [450, 525];
-////zona 4
-//const ax4 = [300, 375, 450];
-//const ay4 = [375, 450, 525];
-//
-////enemy positions
-////zona 1
-//const bx1 = [300];
-//const by1 = [0, 75, 150, 225];
-////zona 2
-//const bx2 = [0, 75];
-//const by2 = [225, 300, 375];
-////zona 3
-//const bx3 = [150, 225];
-//const by3 = [375, 450, 525];
-////zona 4
-//const bx4 = [375, 450, 525];
-//const by4 = [225, 300];
-////zona 5
-//const bx5 = [150, 225];
-//const by5 = [150, 225];
-////zona 6
-//const bx6 = [525];
-//const by6 = [375, 450];
+//array da board
+let arrTiles=[];
 
 //intial postion boat
 let px = 0;
@@ -334,28 +303,7 @@ function setup() {
   island = loadImage('https://i.ibb.co/Ydh3Crs/island.png');
   enemy = loadImage('https://i.ibb.co/FmX47db/enemy.png');
 
-  //islands - gives random values to x and y
-  //rx1
-  
-  //rx2 = random(ax2);
-  //ry2 = random(ay2);
-  //rx3 = random(ax3);
-  //ry3 = random(ay3);
-  //rx4 = random(ax4);
-  //ry4 = random(ay4);
-
-  //enemies - gives random values to x and y
- 
-  //ex2 = random(bx2);
-  //ey2 = random(by2);
-  //ex3 = random(bx3);
-  //ey3 = random(by3);
-  //ex4 = random(bx4);
-  //ey4 = random(by4);
-  //ex5 = random(bx5);
-  //ey5 = random(by5);
-  //ex6 = random(bx6);
-  //ey6 = random(by6);
+  constructBoard();
 
   //islands - estas posições devem ser guardadas na base de dados
   console.log("ilha 1: " + rx1 + "," + ry1);
@@ -379,40 +327,67 @@ function draw() {
   background(212, 241, 249);
 
   //Displays 5 island randomly not in the 1st, 2nd sqaures, in future change to FOR
-  image(island, rx1, ry1, 75, 75);
-  image(island, rx11, ry11, 75, 75);
-  image(island, rx2, ry2, 75, 75);
-  image(island, rx3, ry3, 75, 75);
-  image(island, rx4, ry4, 75, 75);
+  //image(island, rx1, ry1, 75, 75);
+  //image(island, rx11, ry11, 75, 75);
+  //image(island, rx2, ry2, 75, 75);
+  //image(island, rx3, ry3, 75, 75);
+  //image(island, rx4, ry4, 75, 75);
 
   //grid 8X8
-  for (var x = 0; x < width; x += width / 8) {
-    for (var y = 0; y < height; y += height / 8) {
-      stroke(0, 0, 156);
-      strokeWeight(1.5);
-
-      line(x, 0, x, height);
-      line(0, y, width, y);
-    }
-  }
+  drawBoard();
 
   //Displays 6 island randomly not in the 1st, 2nd sqaures, in future change to FOR
-  image(enemy, ex1, ey1, 75, 75);
-  image(enemy, ex2, ey2, 75, 75);
-  image(enemy, ex3, ey3, 75, 75);
-  image(enemy, ex4, ey4, 75, 75);
-  image(enemy, ex5, ey5, 75, 75);
-  image(enemy, ex6, ey6, 75, 75);
+  //image(enemy, ex1, ey1, 75, 75);
+  //image(enemy, ex2, ey2, 75, 75);
+  //image(enemy, ex3, ey3, 75, 75);
+  //image(enemy, ex4, ey4, 75, 75);
+  //image(enemy, ex5, ey5, 75, 75);
+  //image(enemy, ex6, ey6, 75, 75);
 
   //Displays the image boat
   image(boat, px, py, 75, 75);
 
   //text Goal ou colocar a imagem de uma meta
-  stroke(0);
-  fill(150 + sin(frameCount * 0.1) * 100);
-  stroke(0);
-  textSize(31);
-  text("Goal", 527, 595);
+  //stroke(0);
+  //fill(150 + sin(frameCount * 0.1) * 100);
+  //stroke(0);
+  //textSize(31);
+  //text("Goal", 527, 595);
+}
+
+function constructBoard(){
+  w=width/8;
+  h=height/8
+  for(let i=0;i<8;i++){
+    arrTiles[i]=[];
+    for(let j=0;j<8;j++){
+      arrTiles[i][j]= new Tile(i+(i*w),j+(j*h),i,j,w);
+    }
+  }
+}
+
+function drawBoard(){
+  for(let i=0;i<8;i++){
+    for(let j=0;j<8;j++){
+      arrTiles[i][j].draw_Tile();
+    }
+  }
+  
+}
+
+class Tile{  
+  constructor(x,y,i,j,s){
+    
+    this.x=x;
+    this.y=y;
+    this.i=i;
+    this.j=j;
+    this.s=s;
+  }
+ 
+  draw_Tile(){
+    square(this.x,this.y,this.s);
+  }
 }
 
 function keyPressed() {
@@ -439,9 +414,11 @@ function keyPressed() {
       py = py + 75;
     }
   }
+  console.log("x: "+px+"y: "+py);
 }
 
 function hitEnemy(){
+  
   //se o barco estiver na posição e do inimigo,
   //o jogo acaba
   //aparece uma janela, jogar de novo ou sair para o menu inicial
