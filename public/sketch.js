@@ -1,19 +1,17 @@
-//colocar todos os coments em ingles
+//colocar todos os comments em ingles
 //é necessário dividir isto por varios ficheiros
 //é necessário colocar nuvens em cima das ilhas e inimigos
 //é necessário fazer uma pagina inicial com um botao start, pagina home.js
-//organização mapa da jogo (em papel)
+//FEITO organização mapa da jogo (em papel)
 //é necessário fazer o nível extra
 
-
-//
 const pontuacao = 0;
 
 //screen siize
 const screenx = 600;
 const screeny = 600;
 
-
+let i;
 //array da board
 let arrTiles=[];
 
@@ -306,19 +304,19 @@ function setup() {
   constructBoard();
 
   //islands - estas posições devem ser guardadas na base de dados
-  console.log("ilha 1: " + rx1 + "," + ry1);
-  console.log("ilha 11: " + rx11 + "," + ry11);
-  console.log("ilha 2: " + rx2 + "," + ry2);
-  console.log("ilha 3: " + rx3 + "," + ry3);
-  console.log("ilha 4: " + rx4 + "," + ry4);
+  //console.log("ilha 1: " + rx1 + "," + ry1);
+  //console.log("ilha 11: " + rx11 + "," + ry11);
+  //console.log("ilha 2: " + rx2 + "," + ry2);
+  //console.log("ilha 3: " + rx3 + "," + ry3);
+  //console.log("ilha 4: " + rx4 + "," + ry4);
 
   //estas posições devem ser guardadas na base de dados
-  console.log("inimigo 1: " + ex1 + "," + ey1);
-  console.log("inimigo 2: " + ex2 + "," + ey2);
-  console.log("inimigo 3: " + ex3 + "," + ey3);
-  console.log("inimigo 4: " + ex4 + "," + ey4);
-  console.log("inimigo 5: " + ex5 + "," + ey5);
-  console.log("inimigo 6: " + ex6 + "," + ey6);
+  //console.log("inimigo 1: " + ex1 + "," + ey1);
+  //console.log("inimigo 2: " + ex2 + "," + ey2);
+  //console.log("inimigo 3: " + ex3 + "," + ey3);
+  //console.log("inimigo 4: " + ex4 + "," + ey4);
+  //console.log("inimigo 5: " + ex5 + "," + ey5);
+  //console.log("inimigo 6: " + ex6 + "," + ey6);
 }
 
 function draw() {
@@ -357,20 +355,19 @@ function draw() {
 
 function constructBoard(){
   w=width/8;
-  h=height/8;
-  for(let x=0;x<8;x++){
-    arrTiles[x]=[];
-    for(let y=0;y<8;y++){
-      arrTiles[x][y]= new Tile(x+(x*w),y+(y*h),x,y,w);
+  h=height/8
+  for(let i=0;i<8;i++){
+    arrTiles[i]=[];
+    for(let j=0;j<8;j++){
+      arrTiles[i][j]= new Tile(i+(i*w),j+(j*h),i,j,w);
     }
   }
-  
 }
 
 function drawBoard(){
-  for(let x=0;x<8;x++){
-    for(let y=0;y<8;y++){
-      arrTiles[x][y].draw_Tile();
+  for(let i=0;i<8;i++){
+    for(let j=0;j<8;j++){
+      arrTiles[i][j].draw_Tile();
     }
   }
   
@@ -384,21 +381,18 @@ class Tile{
     this.i=i;
     this.j=j;
     this.s=s;
-    this.clr="#e0d57b00";
   }
  
   draw_Tile(){
-    fill(this.clr);
     square(this.x,this.y,this.s);
   }
 }
 
-
-
-
 function keyPressed() {
   if (px < 475) {
+    
     if (keyCode === RIGHT_ARROW) {
+      console.log("a posição do x e:"+arrTiles[1]);
       px = px + 75;
     }
   }
@@ -414,7 +408,7 @@ function keyPressed() {
   }
   if (py < 475) {
     if (keyCode === DOWN_ARROW) {
-      console.log(py + 25);
+      //console.log(py + 25);
       py = py + 75;
     }
   }
