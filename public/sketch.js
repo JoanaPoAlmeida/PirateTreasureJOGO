@@ -357,19 +357,20 @@ function draw() {
 
 function constructBoard(){
   w=width/8;
-  h=height/8
-  for(let i=0;i<8;i++){
-    arrTiles[i]=[];
-    for(let j=0;j<8;j++){
-      arrTiles[i][j]= new Tile(i+(i*w),j+(j*h),i,j,w);
+  h=height/8;
+  for(let x=0;x<8;x++){
+    arrTiles[x]=[];
+    for(let y=0;y<8;y++){
+      arrTiles[x][y]= new Tile(x+(x*w),y+(y*h),x,y,w);
     }
   }
+  
 }
 
 function drawBoard(){
-  for(let i=0;i<8;i++){
-    for(let j=0;j<8;j++){
-      arrTiles[i][j].draw_Tile();
+  for(let x=0;x<8;x++){
+    for(let y=0;y<8;y++){
+      arrTiles[x][y].draw_Tile();
     }
   }
   
@@ -383,9 +384,11 @@ class Tile{
     this.i=i;
     this.j=j;
     this.s=s;
+    this.clr="#e0d57b00";
   }
  
   draw_Tile(){
+    fill(this.clr);
     square(this.x,this.y,this.s);
   }
 }
