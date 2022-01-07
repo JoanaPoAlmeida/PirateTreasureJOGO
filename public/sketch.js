@@ -6,13 +6,13 @@
 //é necessário fazer o nível extra
 
 
-//
+
+
 const pontuacao = 0;
 
 //screen siize
 const screenx = 600;
 const screeny = 600;
-
 
 //array da board
 let arrTiles=[];
@@ -20,6 +20,10 @@ let arrTiles=[];
 //intial postion boat
 let px = 0;
 let py = 0;
+
+//tiles size
+var w=screenx/8;
+var h=screeny/8;
 
 //images
 let boat;
@@ -345,7 +349,7 @@ function draw() {
   //image(enemy, ex6, ey6, 75, 75);
 
   //Displays the image boat
-  image(boat, px, py, 75, 75);
+  image(boat, px, py, w, h);
 
   //text Goal ou colocar a imagem de uma meta
   //stroke(0);
@@ -355,9 +359,10 @@ function draw() {
   //text("Goal", 527, 595);
 }
 
+
+
 function constructBoard(){
-  w=width/8;
-  h=height/8;
+  
   for(let x=0;x<8;x++){
     arrTiles[x]=[];
     for(let y=0;y<8;y++){
@@ -398,23 +403,22 @@ function keyPressed() {
   //console.log(py + 25);
   if (px < 475) {
     if (keyCode === RIGHT_ARROW) {
-      px = px + 75;
+      px = px + w;
     }
   }
   if (px > 25) {
     if (keyCode === LEFT_ARROW) {
-      px = px - 75;
+      px = px - w;
     }
   }
   if (py > 25) {
     if (keyCode === UP_ARROW) {
-      py = py - 75;
+      py = py - height/8;
     }
   }
   if (py < 475) {
     if (keyCode === DOWN_ARROW) {
-      console.log(py + 25);
-      py = py + 75;
+      py = py + height/8;
     }
   }
   console.log("x: "+px+"y: "+py);
