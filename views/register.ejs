@@ -7,23 +7,16 @@
     <title>Register</title>
     <link rel="stylesheet" href="resources/css/style.css">
 </head>
-<body>
+<body style=" background-color: #2C3E50; margin-top: 15%;">
     
     <div class=login-form>
         <h2>Register</h2>
         <form action="/register" method="POST">
 
-            <label for="name">Name</label>
-            <input type="text" name="name" required >
-            
-            <label for="email">Email Address</label>
-            <input type="email" name="email" required>
-            
-            <label for="pass">Password</label>
-            <input type="password" name="pass" required >
-
-            <label for="passwordConfirm">Confirm Password</label>
-            <input type="password" name="passwordConfirm">
+            <input type="text" name="name" required placeholder="name">
+            <input type="text" name="email" required placeholder="email">
+            <input type="password" name="pass" required placeholder="password">
+            <input type="password" name="passwordConfirm" placeholder="confirm password">
             
 
             <div style="display: inline;">

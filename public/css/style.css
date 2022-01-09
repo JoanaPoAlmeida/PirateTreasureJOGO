@@ -19,9 +19,9 @@ body{
     width: 300px;
     margin:0 auto;
 }
-.login-form h1 {
+.login-form h2 {
     text-align: center;
-    color: midnightblue;
+    color: rgb(255, 255, 255);
     font-size: 28px;
     padding: 70px 0 10px 0;
 }
@@ -37,7 +37,7 @@ body{
 .btn-login{
     width: 100%;
     padding: 15px;
-    background-color: #6f42c1;
+    background-color: #994636;
     border:0;
     box-sizing: border-box;
     cursor: pointer;
@@ -47,8 +47,8 @@ body{
 }
 .btn-login:hover,.btn-login:active{
     color:#fff;
-    background-color:#61428f;
-    border-color:#61428f
+    background-color:#994636;
+    border-color:#994636;
   }
   .btn-login:focus{
     box-shadow:0 0 0 3px rgba(121,82,179,0.25)
@@ -59,7 +59,7 @@ body{
 .btn-register{
     width: 100%;
     padding: 15px;
-    background-color: #34D399;
+    background-color: #43AA8B;
     border: 0;
     box-sizing: border-box;
     cursor: pointer;
@@ -75,18 +75,18 @@ body{
   }
   .btn-register:hover,.btn-register:active{
     color:#fff;
-    background-color: #10B981;
-    border-color:#10B981
+    background-color: #994636;
+    border-color:#994636;
   ;
   }
   .btn-register:focus{
-    box-shadow:0 0 0 3px #10B981;
+    box-shadow:0 0 0 3px #994636;
   }
 
   .a-register:link, .a-login:visited {
     background-color: white;
     color: black;
-    border: 2px solid #10B981;
+    border: 2px solid #994636;
     padding: 10px 20px;
     text-align: center;
     text-decoration: none;
@@ -94,7 +94,7 @@ body{
   }
   
   .a-register:hover, .a-login:active {
-    background-color: #10B981;
+    background-color: #994636;
     color: white;
   }
   
@@ -102,7 +102,7 @@ body{
 .a-login:link, .a-login:visited {
     background-color: white;
     color: black;
-    border: 2px solid #10B981;
+    border: 2px solid #43AA8B;
     padding: 10px 20px;
     text-align: center;
     text-decoration: none;
@@ -110,7 +110,7 @@ body{
   }
   
   .a-login:hover, .a-login:active {
-    background-color: #10B981;
+    background-color: #43AA8B;
     color: white;
   }
   
@@ -253,7 +253,7 @@ body{
   .c-body {
     color: #FFFFFF;
     background: #2C3E50;
-  }
+  } 
   
   .title {
     margin: 60px auto;
@@ -299,3 +299,8 @@ body{
   .button--about {
     top: 450px;
   }
+
+
+
+
+

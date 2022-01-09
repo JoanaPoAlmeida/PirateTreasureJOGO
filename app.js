@@ -144,7 +144,7 @@ app.get('/', (req, res)=> {
 	} else {
 		res.render('index',{
 			login:false,
-			name:'Hello! Please Log In or Register',			
+			name:'Hello!',			
 		});				
 	}
 	res.end();
