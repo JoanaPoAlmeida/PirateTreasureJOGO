@@ -1,6 +1,17 @@
+@font-face {
+  font-family: 'zigregular';
+  src: url('http://localhost:3001/public/css/fonts/zig_____-webfont.woff2') format('woff2'),
+       url('http://localhost:3001/public/css/fonts/zig_____-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+html{
+    font-family:'zigregular', sans-serif;
+}
 body{
     background-color: #f5f5f5;
-    font-family: roboto;
+    
     margin: auto;
     text-align: center;
 }

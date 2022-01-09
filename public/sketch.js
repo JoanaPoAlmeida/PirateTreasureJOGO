@@ -123,8 +123,8 @@ function setup() {
     console.log("enemy", enemyExist)
     for(let x=0;x<enemyReceived.length;x++){
 
-      arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].clr=255;
-      //arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img=loadImage('https://i.ibb.co/FmX47db/enemy.png');
+      //arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].clr=0;
+      arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img=loadImage('https://i.ibb.co/FmX47db/enemy.png');
 
       //console.log("this is arrTiles:",arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img);
     }
@@ -133,7 +133,7 @@ function setup() {
     console.log("island", ilhasExist)
     for(let x=0;x<ilhasReceived.length;x++){
 
-      arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].clr=0;
+      arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img=loadImage('https://i.ibb.co/Ydh3Crs/island.png');
       
       //console.log("this is arrTiles:",arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img);
     }
@@ -221,11 +221,11 @@ class Tile{
 function keyPressed() {
   //console.log(px + 25);
   //console.log(py + 25);
-  if (px < 475) {
+  /* if (px < 475) {
     if (keyCode === RIGHT_ARROW) {
       px = px + w;
     }
-  }
+  } */
   if (px > 25) {
     if (keyCode === LEFT_ARROW) {
       px = px - w;
@@ -244,6 +244,35 @@ function keyPressed() {
   console.log("x: "+px+"y: "+py);
 }
 
+function hitEnemy(){
+  if (px < w-75) {
+    if (keyCode === RIGHT_ARROW) {
+      for(let x=0;x<enemyReceived.length;x++){
+        console.log("this is posX",arrTiles[enemyReceived[x].posX])
+        if(arrTiles[enemyReceived[x].posX]==px+w && arrTiles[enemyReceived[y].posY]==py-w){
+
+        }else{
+          px = px + w;
+        }
+      }
+    }
+  }
+  if (px > 25) {
+    if (keyCode === LEFT_ARROW) {
+      px = px - w;
+    }
+  }
+  if (py > 25) {
+    if (keyCode === UP_ARROW) {
+      py = py - height/8;
+    }
+  }
+  if (py < w-75) {
+    if (keyCode === DOWN_ARROW) {
+      py = py + height/8;
+    }
+  }
+}
 
 function nearEnemy(){
 
