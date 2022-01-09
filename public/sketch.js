@@ -1,8 +1,8 @@
-//colocar todos os comments em ingles
+//colocar todos os coments em ingles
 //é necessário dividir isto por varios ficheiros
 //é necessário colocar nuvens em cima das ilhas e inimigos
 //é necessário fazer uma pagina inicial com um botao start, pagina home.js
-//FEITO organização mapa da jogo (em papel)
+//organização mapa da jogo (em papel)
 //é necessário fazer o nível extra
 
 
@@ -14,7 +14,6 @@ const pontuacao = 0;
 const screenx = 600;
 const screeny = 600;
 
-let i;
 //array da board
 let arrTiles=[];
 
@@ -31,299 +30,115 @@ let boat;
 let island;
 let enemy;
 
+let enemyReceived=[];
+let ilhasReceived=[];
+let enemyExist = false;
+let ilhasExist = false;
+
+var lr=0;
+var stap = 20;
+var stop = 600;
+
 function preload(){
 
-  //---------------------------------------------------------------------ISLANDS
-  //----------------------------------------------------------------------zona 1
-  var nzona = { 
-    zona : 1 
-  }
-  httpPost('insertZona/', 'json',  nzona, (resposta)=>{
-    console.log(resposta);
-  });
+  //adicionar inimigos
+  for(let enmy=0;enmy<6;enmy++){
+      for(let x=0;x<8;x++){
+      for(let y=0;y<8;y++){
+        rx=random(1,8);
+        ry=random(1,8);
+        let enemy={
+          "posX":rx,
+          "posY":ry,
+        }
+        httpPost('/insertEnemy','json',enemy,(resposta)=>{
 
-  loadJSON('/islandXposition', (axPosition)=>{
-    if(axPosition.length>0){
-      rx1=axPosition[0].ax;
-        }else{
-          alert("no island x 1 position");
-        };
-  })
-  loadJSON('/islandYposition', (ayPosition)=>{
-    if(ayPosition.length>0){
-      ry1=ayPosition[0].ay;
-        }else{
-          alert("no island y 1 position");
-        };
-  })
+        });
+      }
+    }
+  }
+  
 
-  //-----------------------------------------------------------------------zona 11
-  nzona = { 
-    zona : 11 
-  }
-  httpPost('insertZona/', 'json',  nzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/islandXposition', (axPosition)=>{
-    if(axPosition.length>0){
-      rx11=axPosition[0].ax;
-      console.log("this is rx11  ", rx11);
-        }else{
-          alert("no island x 11 position");
-        };
-  })
-  loadJSON('/islandYposition', (ayPosition)=>{
-    if(ayPosition.length>0){
-      ry11=ayPosition[0].ay;
-      console.log("this is ry11  ", ry11);
-        }else{
-          alert("no island y 11 position");
-        };
-  })
-  //-----------------------------------------------------------------------zona 2
-  nzona = { 
-    zona : 2 
-  }
-  httpPost('insertZona/', 'json',  nzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/islandXposition', (axPosition)=>{
-    if(axPosition.length>0){
-      rx2=axPosition[0].ax;
-      console.log("this is rx2  ", rx2);
-        }else{
-          alert("no island x 2 position");
-        };
-  })
-  loadJSON('/islandYposition', (ayPosition)=>{
-    if(ayPosition.length>0){
-      ry2=ayPosition[0].ay;
-      console.log("this is ry2  ", ry2);
-        }else{
-          alert("no island y 2 position");
-        };
+  loadJSON('/getEnemy',(dataDoServidor)=>{
+
+    if(dataDoServidor.length>0){
+     
+      enemyReceived=dataDoServidor;
+      console.log("enemies:   ", enemyReceived)
+      enemyExist = true;
+      
+    }else{
+      console.log("no enemies");
+    }
+  
   })
 
-  //-----------------------------------------------------------------------zona 3
-  nzona = { 
-    zona : 3
-  }
-  httpPost('insertZona/', 'json',  nzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/islandXposition', (axPosition)=>{
-    if(axPosition.length>0){
-      rx3=axPosition[0].ax;
-      console.log("this is rx3  ", rx3);
-        }else{
-          alert("no island x 3 position");
-        };
-  })
-  loadJSON('/islandYposition', (ayPosition)=>{
-    if(ayPosition.length>0){
-      ry3=ayPosition[0].ay;
-      console.log("this is ry3  ", ry3);
-        }else{
-          alert("no island y 3 position");
-        };
-  })
+  //adicionar ilhas
 
-  //-----------------------------------------------------------------------zona 4
-  nzona = { 
-    zona : 4
-  }
-  httpPost('insertZona/', 'json',  nzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/islandXposition', (axPosition)=>{
-    if(axPosition.length>0){
-      rx4=axPosition[0].ax;
-      console.log("this is rx4  ", rx4);
-        }else{
-          alert("no island x 4 position");
-        };
-  })
-  loadJSON('/islandYposition', (ayPosition)=>{
-    if(ayPosition.length>0){
-      ry4=ayPosition[0].ay;
-      console.log("this is ry4 ", ry4);
-        }else{
-          alert("no island y 4 position");
-        };
-  })
+  for(let ilh=0;ilh<5;ilh++){
+    for(let x=0;x<8;x++){
+      for(let y=0;y<8;y++){
+        ix=random(1,8);
+        iy=random(1,8);
+        let island={
+          "posX":ix,
+          "posY":iy,
+        }
+        httpPost('/insertIsland','json',island,(resposta)=>{
 
-  //---------------------------------------------------------------------ENEMIES
-  //----------------------------------------------------------------------zona 1
-  var nnzona = { 
-    ezona : 1 
+        });
+      }
   }
-  httpPost('insertZonaE/', 'json',  nnzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/enemyXposition', (bxPosition)=>{
-    if(bxPosition.length>0){
-      ex1=bxPosition[0].ex;
-      console.log("this is ex1  ", ex1);
-        }else{
-          alert("no enemy 1 x position");
-        };
-  })
-  loadJSON('/enemyYposition', (byPosition)=>{
-    if(byPosition.length>0){
-      ey1=byPosition[0].ey;
-      console.log("this is ey1  ", ey1);
-        }else{
-          alert("no enemy 1 y position");
-        };
-  })
-
-  //------------------------------------------------------------------zona 2
-  nnzona = { 
-    ezona : 2 
-  }
-  httpPost('insertZonaE/', 'json',  nnzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/enemyXposition', (bxPosition)=>{
-    if(bxPosition.length>0){
-      ex2=bxPosition[0].ex;
-      console.log("this is ex2  ", ex2);
-        }else{
-          alert("no enemy 2 x position");
-        };
-  })
-  loadJSON('/enemyYposition', (byPosition)=>{
-    if(byPosition.length>0){
-      ey2=byPosition[0].ey;
-      console.log("this is ey2  ", ey2);
-        }else{
-          alert("no enemy 2 y position");
-        };
-  })
-
-  //------------------------------------------------------------------zona 3
-  nnzona = { 
-    ezona : 3 
-  }
-  httpPost('insertZonaE/', 'json',  nnzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/enemyXposition', (bxPosition)=>{
-    if(bxPosition.length>0){
-      ex3=bxPosition[0].ex;
-      console.log("this is ex3  ", ex3);
-        }else{
-          alert("no enemy 3 x position");
-        };
-  })
-  loadJSON('/enemyYposition', (byPosition)=>{
-    if(byPosition.length>0){
-      ey3=byPosition[0].ey;
-      console.log("this is ey3  ", ey3);
-        }else{
-          alert("no enemy 3 y position");
-        };
-  })
-
-  //------------------------------------------------------------------zona 4
-  nnzona = { 
-    ezona : 4 
-  }
-  httpPost('insertZonaE/', 'json',  nnzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/enemyXposition', (bxPosition)=>{
-    if(bxPosition.length>0){
-      ex4=bxPosition[0].ex;
-      console.log("this is ex4  ", ex4);
-        }else{
-          alert("no enemy 4 x position");
-        };
-  })
-  loadJSON('/enemyYposition', (byPosition)=>{
-    if(byPosition.length>0){
-      ey4=byPosition[0].ey;
-      console.log("this is ey4  ", ey4);
-        }else{
-          alert("no enemy 4 y position");
-        };
-  })
-
-  //------------------------------------------------------------------zona 5
-  nnzona = { 
-    ezona : 5 
-  }
-  httpPost('insertZonaE/', 'json',  nnzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/enemyXposition', (bxPosition)=>{
-    if(bxPosition.length>0){
-      ex5=bxPosition[0].ex;
-      console.log("this is ex5  ", ex5);
-        }else{
-          alert("no enemy 5x position");
-        };
-  })
-  loadJSON('/enemyYposition', (byPosition)=>{
-    if(byPosition.length>0){
-      ey5=byPosition[0].ey;
-      console.log("this is ey5  ", ey5);
-        }else{
-          alert("no enemy 5 y position");
-        };
-  })
-
-  //------------------------------------------------------------------zona 6
-  nnzona = { 
-    ezona : 6
-  }
-  httpPost('insertZonaE/', 'json',  nnzona, (resposta)=>{
-    console.log(resposta);
-  });
-  loadJSON('/enemyXposition', (bxPosition)=>{
-    if(bxPosition.length>0){
-      ex6=bxPosition[0].ex;
-      console.log("this is ex6  ", ex6);
-        }else{
-          alert("no enemy 6x position");
-        };
-  })
-  loadJSON('/enemyYposition', (byPosition)=>{
-    if(byPosition.length>0){
-      ey6=byPosition[0].ey;
-      console.log("this is ey6  ", ey6);
-        }else{
-          alert("no enemy 6 y position");
-        };
-  })
 }
 
+
+loadJSON('/getIsland',(dataDoServidor)=>{
+
+  if(dataDoServidor.length>0){
+   
+    ilhasReceived=dataDoServidor;
+    console.log("ilhas:   ", ilhasReceived)
+    ilhasExist = true;
+    
+  }else{
+    console.log("no islands");
+  }
+
+})
+
+}
 function setup() {
   createCanvas(screenx, screeny);
-  //canvas.position(200, 50);
-  console.log("its working");
 
   //load images
   boat = loadImage('https://i.ibb.co/vkLDdmN/boat.png');
   island = loadImage('https://i.ibb.co/Ydh3Crs/island.png');
   enemy = loadImage('https://i.ibb.co/FmX47db/enemy.png');
+  back = loadImage('https://i.ibb.co/K9r38JD/background.png');
 
   constructBoard();
+  print(arrTiles);
 
-  //islands - estas posições devem ser guardadas na base de dados
-  //console.log("ilha 1: " + rx1 + "," + ry1);
-  //console.log("ilha 11: " + rx11 + "," + ry11);
-  //console.log("ilha 2: " + rx2 + "," + ry2);
-  //console.log("ilha 3: " + rx3 + "," + ry3);
-  //console.log("ilha 4: " + rx4 + "," + ry4);
+  if(enemyExist){
+    console.log("enemy", enemyExist)
+    for(let x=0;x<enemyReceived.length;x++){
 
-  //estas posições devem ser guardadas na base de dados
-  //console.log("inimigo 1: " + ex1 + "," + ey1);
-  //console.log("inimigo 2: " + ex2 + "," + ey2);
-  //console.log("inimigo 3: " + ex3 + "," + ey3);
-  //console.log("inimigo 4: " + ex4 + "," + ey4);
-  //console.log("inimigo 5: " + ex5 + "," + ey5);
-  //console.log("inimigo 6: " + ex6 + "," + ey6);
+      arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].clr=255;
+      //arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img=loadImage('https://i.ibb.co/FmX47db/enemy.png');
+
+      //console.log("this is arrTiles:",arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img);
+    }
+  }
+  if(ilhasExist){
+    console.log("island", ilhasExist)
+    for(let x=0;x<ilhasReceived.length;x++){
+
+      arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].clr=0;
+      
+      //console.log("this is arrTiles:",arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img);
+    }
+  }
+
 }
 
 function draw() {
@@ -340,6 +155,8 @@ function draw() {
 
   //grid 8X8
   drawBoard();
+
+  //nearEnemy();
 
   //Displays 6 island randomly not in the 1st, 2nd sqaures, in future change to FOR
   //image(enemy, ex1, ey1, 75, 75);
@@ -370,12 +187,13 @@ function constructBoard(){
       arrTiles[x][y]= new Tile(x+(x*w),y+(y*h),x,y,w);
     }
   }
+  
 }
 
 function drawBoard(){
-  for(let i=0;i<8;i++){
-    for(let j=0;j<8;j++){
-      arrTiles[i][j].draw_Tile();
+  for(let x=0;x<8;x++){
+    for(let y=0;y<8;y++){
+      arrTiles[x][y].draw_Tile();
     }
   }
   
@@ -389,16 +207,21 @@ class Tile{
     this.i=i;
     this.j=j;
     this.s=s;
+    this.clr="#e0d57b00";
+    this.img=loadImage('https://i.ibb.co/K9r38JD/background.png');
   }
  
   draw_Tile(){
+    image(this.img,this.x,this.y,this.s,this.s);
+    fill(this.clr);
     square(this.x,this.y,this.s);
   }
 }
 
 function keyPressed() {
+  //console.log(px + 25);
+  //console.log(py + 25);
   if (px < 475) {
-    
     if (keyCode === RIGHT_ARROW) {
       px = px + w;
     }
@@ -421,11 +244,14 @@ function keyPressed() {
   console.log("x: "+px+"y: "+py);
 }
 
-function hitEnemy(){
-  
-  //se o barco estiver na posição e do inimigo,
-  //o jogo acaba
-  //aparece uma janela, jogar de novo ou sair para o menu inicial
+
+function nearEnemy(){
+
+  for(let x=0;x<8;x++){
+    for(let y=0;y<8;y++){
+      arrTiles[x][y].clr=191 + sin(frameCount * 0.1) * 50;
+    }
+  }
   
 }
 function hitIsland(){

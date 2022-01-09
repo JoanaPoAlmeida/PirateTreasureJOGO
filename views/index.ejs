@@ -9,14 +9,23 @@
     <script src="../public/libraries/p5.js"></script>
     <script src="../public/libraries/p5.sound.min.js"></script>
 </head>
-<body>         
-    <h1>Página de Inicio</h1>
+<body style="background-color: #2C3E50;">         
+    <h1 class="title">Welcome to <br> Pirate Treasure!</h1>
     <% if (login) { %>                
-        <h1>Usuario conectado: <strong><%= name %></strong></h1>                        
+        <h3>Usuario conectado: <strong><%= name %></strong></h3>                        
         <a href="logout" class="a-logout">Logout</a>
 
-        <h2>Pirate Treasure </h2>
-        <script src="../public/sketch.js" class="sketch_script"></script>
+        <div class="menu">
+           
+            <ul>
+              <a href="game"> <li class="button button--start">Start</li></a>
+              <a href="https://www.google.com"><li class="button button--scores">About</li></a>
+              <a href="https://www.google.com"><li class="button button--about">a definir</li></a>
+            </ul>
+          </div>
+
+       <!--  <h2>Pirate Treasure </h2>
+        <script src="../public/sketch.js" class="sketch_script"></script> -->
         
     <%} else { %>
         <h1><strong><%= name %></strong></h1>   
