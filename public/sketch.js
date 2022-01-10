@@ -221,11 +221,11 @@ class Tile{
 function keyPressed() {
   //console.log(px + 25);
   //console.log(py + 25);
-  /* if (px < 475) {
+  if (px < 475) {
     if (keyCode === RIGHT_ARROW) {
       px = px + w;
     }
-  } */
+  }
   if (px > 25) {
     if (keyCode === LEFT_ARROW) {
       px = px - w;
