@@ -296,19 +296,19 @@ main{
   }
   
   .button--start {
-    top: 55%;
+    top: 35%;
   }
   
   .button--scores {
-    top: 65%;
+    top: 45%;
   }
   
   .button--about {
-    top: 75%;
+    top: 55%;
   }
 
   .user_conected {
-    top: 75%;
+    margin-top: 25%;
   }
 
 
