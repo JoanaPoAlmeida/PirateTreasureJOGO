@@ -144,7 +144,7 @@ function setup() {
 function draw() {
   //background color
   background(0);
-  background(212, 241, 249);
+  background(145, 187, 199);
 
   //Displays 5 island randomly not in the 1st, 2nd sqaures, in future change to FOR
   //image(island, rx1, ry1, 75, 75);
