@@ -293,8 +293,9 @@ function keyPressed() {
       if(bx>=0 || bx<9){
         arrTiles[bx][by].img=images[2]; //posiçao anterior para mar
         bx++;
-        arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
+        //arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
+        print(bx);
         let boatpos = {
           posX:bx,
           posY:by
@@ -305,6 +306,9 @@ function keyPressed() {
       httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
         print(res);
       });
+
+      arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
+
       }else{
         
       }

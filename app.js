@@ -256,6 +256,8 @@ res.send(result);
 app.post('/boatPosition', (req,res) =>{
 	let x=req.body.posX;
 	let y=req.body.posY;
+
+	
 	let sql = "INSERT INTO boat VALUES('"+x+"','"+y+"');"
 
 	connection.query(sql,(err,result)=>{
@@ -276,7 +278,9 @@ app.get('/getBoat', (req,res)=>{
 app.put('/updateBoat', (req,res)=>{
 	let x=req.body.posX;
 	let y=req.body.posY;
-	let sql="UPDATE boat SET posX='"+x+"' AND posY='"+y+"' WHERE id = 1;"
+
+	console.log("this is from app.js",req.body.posX);
+	let sql="UPDATE boat SET posX='"+x+"', posY='"+y+"';"
 	connection.query(sql,(err,result)=>{
 		if(err) throw err;	
 		res.send(result);	
