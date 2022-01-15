@@ -26,7 +26,6 @@ var w=screenx/8;
 var h=screeny/8;
 
 //images
-let boat;
 let island;
 let enemy;
 
@@ -35,27 +34,51 @@ let ilhasReceived=[];
 let enemyExist = false;
 let ilhasExist = false;
 
-var lr=0;
-var stap = 20;
-var stop = 600;
+let arrEnemies = [];
+let arrIsland = [];
+let images = [];
 
 function preload(){
 
+  //delete everything in database in table positions
+  
+  httpDo('/deletePositions', 'DELETE', function(response){
+    print("response",response);
+  }); 
+
+
+  //fazer load das imagens
+  images[0]=loadImage('https://i.ibb.co/Ydh3Crs/island.png'); //ilhas
+  images[1]=loadImage('https://i.ibb.co/FmX47db/enemy.png'); //enemy
+  images[2]=loadImage('https://i.ibb.co/K9r38JD/background.png'); //background
+  images[3]=loadImage('https://i.ibb.co/vkLDdmN/boat.png'); //boat
+
   //adicionar inimigos
   for(let enmy=0;enmy<6;enmy++){
-      for(let x=0;x<8;x++){
-      for(let y=0;y<8;y++){
-        rx=random(1,8);
-        ry=random(1,8);
+      
+        let rx = int(random(1, 9));
+        let ry = int(random(1, 9));
         let enemy={
           "posX":rx,
           "posY":ry,
         }
+        if (arrEnemies.length > 0) {
+          if (compareEnemy(enemy)) {
+            arrEnemies.push(enemy);
+          } else {
+            enmy--;
+            print("igual")
+          }
+        } else {
+          arrEnemies.push(enemy);
+        }
+        print(enemy)
+
         httpPost('/insertEnemy','json',enemy,(resposta)=>{
 
         });
-      }
-    }
+      
+    
   }
   
 
@@ -75,21 +98,33 @@ function preload(){
 
   //adicionar ilhas
 
-  for(let ilh=0;ilh<5;ilh++){
-    for(let x=0;x<8;x++){
-      for(let y=0;y<8;y++){
-        ix=random(1,8);
-        iy=random(1,8);
+  for(let ilh=0;ilh<=5;ilh++){
+
+        let rx = int(random(1, 9));
+        let ry = int(random(1, 9));
         let island={
-          "posX":ix,
-          "posY":iy,
+          "posX":rx,
+          "posY":ry,
         }
+        if (arrIsland.length > 0) {
+          if (compareIsland(island)) {
+            arrIsland.push(island);
+          } else {
+            ilh--;
+            print("igual")
+          }
+        } else {
+          arrIsland.push(island);
+        }
+        print(island)
+
+      
         httpPost('/insertIsland','json',island,(resposta)=>{
 
         });
-      }
   }
-}
+  
+
 
 
 loadJSON('/getIsland',(dataDoServidor)=>{
@@ -106,38 +141,79 @@ loadJSON('/getIsland',(dataDoServidor)=>{
 
 })
 
+
+
 }
+
+function compareEnemy(enemy) {
+  let flag = 0;
+
+  for (let i = 0; i < arrEnemies.length; i++) {
+    if (arrEnemies[i].posX == enemy.posX && arrEnemies[i].posY == enemy.posY) {
+      flag = 1;
+    }
+  }
+
+  if (flag == 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function compareIsland(island) {
+  let flag = 0;
+
+  for (let i = 0; i < arrIsland.length; i++) {
+    if (arrIsland[i].posX == island.posX && arrIsland[i].posY == island.posY) {
+      flag = 1;
+    }
+  }
+
+  if (flag == 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function setup() {
   createCanvas(screenx, screeny);
 
-  //load images
-  boat = loadImage('https://i.ibb.co/vkLDdmN/boat.png');
-  island = loadImage('https://i.ibb.co/Ydh3Crs/island.png');
-  enemy = loadImage('https://i.ibb.co/FmX47db/enemy.png');
-  back = loadImage('https://i.ibb.co/K9r38JD/background.png');
 
   constructBoard();
+
   print(arrTiles);
 
   if(enemyExist){
-    console.log("enemy", enemyExist)
+    console.log("enemy", enemyReceived)
     for(let x=0;x<enemyReceived.length;x++){
 
-      //arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].clr=0;
-      arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img=loadImage('https://i.ibb.co/FmX47db/enemy.png');
+      arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img=images[1];
 
-      //console.log("this is arrTiles:",arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img);
     }
   }
   if(ilhasExist){
-    console.log("island", ilhasExist)
+    console.log("island", ilhasReceived)
     for(let x=0;x<ilhasReceived.length;x++){
 
-      arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img=loadImage('https://i.ibb.co/Ydh3Crs/island.png');
+      arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img=images[0];
       
-      //console.log("this is arrTiles:",arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img);
     }
   }
+
+  arrTiles[0][0].img=images[3];
+  let boatpos = {
+    posX: 0,
+    posY: 0
+  }
+  httpDo('/updateBoat','PUT', 'json', boatpos, (response)=>{
+
+  });
+
+  push();
+  keyPressed();
+  pop();
 
 }
 
@@ -146,28 +222,13 @@ function draw() {
   background(0);
   background(145, 187, 199);
 
-  //Displays 5 island randomly not in the 1st, 2nd sqaures, in future change to FOR
-  //image(island, rx1, ry1, 75, 75);
-  //image(island, rx11, ry11, 75, 75);
-  //image(island, rx2, ry2, 75, 75);
-  //image(island, rx3, ry3, 75, 75);
-  //image(island, rx4, ry4, 75, 75);
 
   //grid 8X8
   drawBoard();
+  
 
+  
   //nearEnemy();
-
-  //Displays 6 island randomly not in the 1st, 2nd sqaures, in future change to FOR
-  //image(enemy, ex1, ey1, 75, 75);
-  //image(enemy, ex2, ey2, 75, 75);
-  //image(enemy, ex3, ey3, 75, 75);
-  //image(enemy, ex4, ey4, 75, 75);
-  //image(enemy, ex5, ey5, 75, 75);
-  //image(enemy, ex6, ey6, 75, 75);
-
-  //Displays the image boat
-  image(boat, px, py, w, h);
 
   //text Goal ou colocar a imagem de uma meta
   //stroke(0);
@@ -181,9 +242,9 @@ function draw() {
 
 function constructBoard(){
   
-  for(let x=0;x<8;x++){
+  for(let x=0;x<=9;x++){
     arrTiles[x]=[];
-    for(let y=0;y<8;y++){
+    for(let y=0;y<=9;y++){
       arrTiles[x][y]= new Tile(x+(x*w),y+(y*h),x,y,w);
     }
   }
@@ -191,8 +252,8 @@ function constructBoard(){
 }
 
 function drawBoard(){
-  for(let x=0;x<8;x++){
-    for(let y=0;y<8;y++){
+  for(let x=0;x<=9;x++){
+    for(let y=0;y<=9;y++){
       arrTiles[x][y].draw_Tile();
     }
   }
@@ -208,7 +269,7 @@ class Tile{
     this.j=j;
     this.s=s;
     this.clr="#e0d57b00";
-    this.img=loadImage('https://i.ibb.co/K9r38JD/background.png');
+    this.img=images[2];
   }
  
   draw_Tile(){
@@ -216,40 +277,202 @@ class Tile{
     fill(this.clr);
     square(this.x,this.y,this.s);
   }
+
 }
 
 function keyPressed() {
-  //console.log(px + 25);
-  //console.log(py + 25);
-  if (px < 475) {
-    if (keyCode === RIGHT_ARROW) {
-      px = px + w;
-    }
+
+  if (keyCode === RIGHT_ARROW){
+    loadJSON('/getBoat',(dataDoServidor)=>{
+
+      let boat=dataDoServidor;
+
+      let bx=boat[0].posX;
+      let by=boat[0].posY;
+
+      if(bx>=0 || bx<9){
+        arrTiles[bx][by].img=images[2]; //posiçao anterior para mar
+        bx++;
+        arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
+
+        let boatpos = {
+          posX:bx,
+          posY:by
+        }
+
+      print(boatpos);
+
+      httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+        print(res);
+      });
+      }else{
+        
+      }
+    })
   }
-  if (px > 25) {
-    if (keyCode === LEFT_ARROW) {
-      px = px - w;
-    }
+
+   if (keyCode === LEFT_ARROW){
+    loadJSON('/getBoat',(dataDoServidor)=>{
+      let boat=dataDoServidor;
+
+      let bx=boat[0].posX;
+      let by=boat[0].posY;
+
+      if(bx>0 || bx<9){
+        arrTiles[bx][by].img=images[2]; //posiçao anterior para mar
+
+      bx--;
+      arrTiles[bx][by].img=images[3];
+
+      boatpos = {
+        posX:bx,
+        posY:by
+      }
+
+      print(boatpos);
+
+      httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+
+      });
+      }else{
+
+      }
+
+      
+    })
   }
-  if (py > 25) {
-    if (keyCode === UP_ARROW) {
-      py = py - height/8;
-    }
+
+  if (keyCode === DOWN_ARROW){
+    loadJSON('/getBoat',(dataDoServidor)=>{
+      let boat=dataDoServidor;
+
+      let bx=boat[0].posX;
+      let by=boat[0].posY;
+
+      arrTiles[bx][by].img=images[2]; //posiçao anterior para mar
+
+      by++;
+      arrTiles[bx][by].img=images[3];
+
+      boatpos = {
+        posX:bx,
+        posY:by
+      }
+
+      print(boatpos);
+
+      httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+
+      });
+    })
   }
-  if (py < 475) {
-    if (keyCode === DOWN_ARROW) {
-      py = py + height/8;
-    }
+
+  if (keyCode === UP_ARROW){
+    loadJSON('/getBoat',(dataDoServidor)=>{
+      let boat=dataDoServidor;
+
+      let bx=boat[0].posX;
+      let by=boat[0].posY;
+
+      arrTiles[bx][by].img=images[2]; //posiçao anterior para mar
+
+      by--;
+      arrTiles[bx][by].img=images[3];
+
+      boatpos = {
+        posX:bx,
+        posY:by
+      }
+
+      print(boatpos);
+
+      httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+
+      });
+    })
   }
-  console.log("x: "+px+"y: "+py);
+  
 }
+
+  
+  
+  /* if (keyCode === RIGHT_ARROW) {
+    for(let x=0;x<9;x++){
+      for(let y=0;y<9;y++){
+        if(x<=0||x>9){
+          x=x+1;
+
+          arrTiles[0][0].img=images[2];
+          arrTiles[x][y].img=images[3];          
+          
+          //print(boat);
+          //print("boat", boat)
+          
+        }else{
+
+        }
+      }
+    }
+  } */
+
+    /* if (keyCode === LEFT_ARROW) {
+      for(let x=0;x<9;x++){
+        for(let y=0;y<9;y++){
+          if(x<0||x>9){
+            x=x-1;
+            arrTiles[x][y].img=images[3];
+            break;
+          }else{
+
+          }
+          
+        }
+      }
+    } */
+
+   /*  if (keyCode === UP_ARROW) {
+      for(let x=0;x<9;x++){
+        for(let y=0;y<9;y++){
+          if(y<0||y>9){
+            y=y+1;
+            arrTiles[x][y].img=images[3];
+            break;
+          }
+        }
+      }
+    }
+
+    if (keyCode === DOWN_ARROW) {
+      for(let x=0;x<9;x++){
+        for(let y=0;y<9;y++){
+          if(y<0||y>9){
+            y=y-1;
+            arrTiles[x][y].img=images[3];
+            
+          }
+        }
+      }
+    } */
+
+
 
 function hitEnemy(){
   if (px < w-75) {
     if (keyCode === RIGHT_ARROW) {
+
+      /* let boat = {
+        posX=px,
+        posY=py
+      } */
+
+      //httpPost()
       for(let x=0;x<enemyReceived.length;x++){
         console.log("this is posX",arrTiles[enemyReceived[x].posX])
+
+
         if(arrTiles[enemyReceived[x].posX]==px+w && arrTiles[enemyReceived[y].posY]==py-w){
+
+          //post da posicao do barco
 
         }else{
           px = px + w;

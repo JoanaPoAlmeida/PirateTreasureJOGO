@@ -167,6 +167,8 @@ app.get('/logout', function (req, res) {
 });
 
 
+
+
 //inserir posiçoes das zonas dos inimigos na base de dados
 
 
@@ -225,9 +227,7 @@ app.post('/insertIsland',(req,res)=>{
 	
 	connection.query(sql,(err,result)=>{
 	if(err) throw err;
-	
-	
-	
+
 	res.send(result);
 	
 	});
@@ -250,6 +250,51 @@ res.send(result);
 
 });
 
+})
+
+//add initial boat position into database
+app.post('/boatPosition', (req,res) =>{
+	let x=req.body.posX;
+	let y=req.body.posY;
+	let sql = "INSERT INTO boat VALUES('"+x+"','"+y+"');"
+
+	connection.query(sql,(err,result)=>{
+		if(err) throw err;
+		res.send(result);
+	});
+})
+
+//get boat current position
+app.get('/getBoat', (req,res)=>{
+	let sql="SELECT * FROM boat;";
+	connection.query(sql,(err,result)=>{
+		if(err) throw err;	
+		res.send(result);	
+	});
+})
+
+app.put('/updateBoat', (req,res)=>{
+	let x=req.body.posX;
+	let y=req.body.posY;
+	let sql="UPDATE boat SET posX='"+x+"' AND posY='"+y+"' WHERE id = 1;"
+	connection.query(sql,(err,result)=>{
+		if(err) throw err;	
+		res.send(result);	
+	});
+})
+
+
+
+
+
+app.delete('/deletePositions', (req,res) =>{
+	let type="island";
+	let type2="enemy";
+	let sql = "DELETE FROM positions WHERE TYPE='"+type+"' AND type = '"+type2+"';"
+	connection.query(sql,(err,result)=>{
+		if(err) throw err;	
+		res.send(result);	
+	});
 })
 
 
