@@ -42,10 +42,10 @@ function preload(){
 
   //delete everything in database in table positions
   
-  httpDo('/deletePositions', 'DELETE', function(response){
+  /* httpDo('/deletePositions', 'DELETE', function(response){
     print("response",response);
   }); 
-
+ */
 
   //fazer load das imagens
   images[0]=loadImage('https://i.ibb.co/Ydh3Crs/island.png'); //ilhas
@@ -56,8 +56,8 @@ function preload(){
   //adicionar inimigos
   for(let enmy=0;enmy<6;enmy++){
       
-        let rx = int(random(1, 9));
-        let ry = int(random(1, 9));
+        let rx = int(random(0, 8));
+        let ry = int(random(0, 8));
         let enemy={
           "posX":rx,
           "posY":ry,
@@ -65,6 +65,9 @@ function preload(){
         if (arrEnemies.length > 0) {
           if (compareEnemy(enemy)) {
             arrEnemies.push(enemy);
+          } else if(enemy.posX == 0 && enemy.posY==0) {
+            enmy--;
+            print("0,0", enemy.posX, enemy.posY);
           } else {
             enmy--;
             print("igual")
@@ -211,9 +214,8 @@ function setup() {
 
   });
 
-  push();
   keyPressed();
-  pop();
+  
 
 }
 
@@ -238,48 +240,6 @@ function draw() {
   //text("Goal", 527, 595);
 }
 
-
-
-function constructBoard(){
-  
-  for(let x=0;x<=9;x++){
-    arrTiles[x]=[];
-    for(let y=0;y<=9;y++){
-      arrTiles[x][y]= new Tile(x+(x*w),y+(y*h),x,y,w);
-    }
-  }
-  
-}
-
-function drawBoard(){
-  for(let x=0;x<=9;x++){
-    for(let y=0;y<=9;y++){
-      arrTiles[x][y].draw_Tile();
-    }
-  }
-  
-}
-
-class Tile{  
-  constructor(x,y,i,j,s){
-    
-    this.x=x;
-    this.y=y;
-    this.i=i;
-    this.j=j;
-    this.s=s;
-    this.clr="#e0d57b00";
-    this.img=images[2];
-  }
- 
-  draw_Tile(){
-    image(this.img,this.x,this.y,this.s,this.s);
-    fill(this.clr);
-    square(this.x,this.y,this.s);
-  }
-
-}
-
 function keyPressed() {
 
   if (keyCode === RIGHT_ARROW){
@@ -290,27 +250,28 @@ function keyPressed() {
       let bx=boat[0].posX;
       let by=boat[0].posY;
 
-      if(bx>=0 || bx<9){
+      if(bx>=0 || bx<9 ){
         arrTiles[bx][by].img=images[2]; //posiçao anterior para mar
         bx++;
-        //arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
-        print(bx);
         let boatpos = {
           posX:bx,
           posY:by
         }
 
-      print(boatpos);
+        arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
-      httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
-        print(res);
-      });
+        httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+         
+        });
 
-      arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
+           
+        //compareBoatEnemy
+        //compareBoatIlha
 
       }else{
-        
+        bx--;
+        arrTiles[bx][by].img=images[3]
       }
     })
   }
@@ -398,108 +359,70 @@ function keyPressed() {
   
 }
 
-  
-  
-  /* if (keyCode === RIGHT_ARROW) {
-    for(let x=0;x<9;x++){
-      for(let y=0;y<9;y++){
-        if(x<=0||x>9){
-          x=x+1;
-
-          arrTiles[0][0].img=images[2];
-          arrTiles[x][y].img=images[3];          
-          
-          //print(boat);
-          //print("boat", boat)
-          
-        }else{
-
-        }
-      }
-    }
-  } */
-
-    /* if (keyCode === LEFT_ARROW) {
-      for(let x=0;x<9;x++){
-        for(let y=0;y<9;y++){
-          if(x<0||x>9){
-            x=x-1;
-            arrTiles[x][y].img=images[3];
-            break;
-          }else{
-
-          }
-          
-        }
-      }
-    } */
-
-   /*  if (keyCode === UP_ARROW) {
-      for(let x=0;x<9;x++){
-        for(let y=0;y<9;y++){
-          if(y<0||y>9){
-            y=y+1;
-            arrTiles[x][y].img=images[3];
-            break;
-          }
-        }
-      }
-    }
-
-    if (keyCode === DOWN_ARROW) {
-      for(let x=0;x<9;x++){
-        for(let y=0;y<9;y++){
-          if(y<0||y>9){
-            y=y-1;
-            arrTiles[x][y].img=images[3];
-            
-          }
-        }
-      }
-    } */
-
-
-
-function hitEnemy(){
-  if (px < w-75) {
-    if (keyCode === RIGHT_ARROW) {
-
-      /* let boat = {
-        posX=px,
-        posY=py
-      } */
-
-      //httpPost()
-      for(let x=0;x<enemyReceived.length;x++){
-        console.log("this is posX",arrTiles[enemyReceived[x].posX])
-
-
-        if(arrTiles[enemyReceived[x].posX]==px+w && arrTiles[enemyReceived[y].posY]==py-w){
-
-          //post da posicao do barco
-
-        }else{
-          px = px + w;
-        }
-      }
+function compareBoatEnemy(boatpos){
+  let flag = 0;
+  print(arrEnemies);
+  for(let i=0; i<arrEnemies.length; i++){
+    if (arrEnemies[i].posX == boatpos.posX && arrEnemies[i].posY == boatpos.posY) {
+      flag = 1;
     }
   }
-  if (px > 25) {
-    if (keyCode === LEFT_ARROW) {
-      px = px - w;
-    }
-  }
-  if (py > 25) {
-    if (keyCode === UP_ARROW) {
-      py = py - height/8;
-    }
-  }
-  if (py < w-75) {
-    if (keyCode === DOWN_ARROW) {
-      py = py + height/8;
-    }
+  if (flag == 0) {
+    return true;
+  } else {
+    return false;
   }
 }
+
+
+
+function constructBoard(){
+  
+  for(let x=0;x<=9;x++){
+    arrTiles[x]=[];
+    for(let y=0;y<=9;y++){
+      arrTiles[x][y]= new Tile(x+(x*w),y+(y*h),x,y,w);
+    }
+  }
+  
+}
+
+function drawBoard(){
+  for(let x=0;x<=9;x++){
+    for(let y=0;y<=9;y++){
+      arrTiles[x][y].draw_Tile();
+    }
+  }
+  
+}
+
+class Tile{  
+  constructor(x,y,i,j,s){
+    
+    this.x=x;
+    this.y=y;
+    this.i=i;
+    this.j=j;
+    this.s=s;
+    this.clr="#e0d57b00";
+    this.img=images[2];
+  }
+ 
+  draw_Tile(){
+    image(this.img,this.x,this.y,this.s,this.s);
+    fill(this.clr);
+    square(this.x,this.y,this.s);
+  }
+
+}
+
+  
+
+  
+
+
+
+
 
 function nearEnemy(){
 
