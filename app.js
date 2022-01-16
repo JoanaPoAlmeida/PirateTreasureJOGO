@@ -41,6 +41,12 @@ app.get('/login', (req, res)=>{
 app.get('/register', (req, res)=>{
     res.render('register');
 })
+app.get('/howplay', (req, res)=>{
+    res.render('howplay');
+})
+app.get('/about', (req, res)=>{
+    res.render('about');
+})
 app.get('/game', (req, res)=>{
 	
 	//Quando atualizar a pagina vai apagar as posiçoes ja inseridas
@@ -356,6 +362,6 @@ app.delete('/deletePositions', (req,res) =>{
 
 
 //console.log(__dirname);
-app.listen(3001,(req, res)=>{
-    console.log('SERVER RUNNING IN http://localhost:3001');
+app.listen(3002,(req, res)=>{
+    console.log('SERVER RUNNING IN http://localhost:3002');
 })
