@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'zigregular';
-  src: url('http://localhost:3002/public/css/fonts/zig_____-webfont.woff2') format('woff2'),
-       url('http://localhost:3002/public/css/fonts/zig_____-webfont.woff') format('woff');
+  src: url('http://localhost:3001/public/css/fonts/zig_____-webfont.woff2') format('woff2'),
+       url('http://localhost:3001/public/css/fonts/zig_____-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
