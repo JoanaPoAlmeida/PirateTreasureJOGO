@@ -8,7 +8,7 @@
 
 
 
-const pontuacao = 0;
+let pontuacao = 0;
 
 //screen siize
 const screenx = 600;
@@ -63,8 +63,16 @@ function preload(){
           "posX":rx,
           "posY":ry,
         }
-        if (arrEnemies.length > 0) {
+
+        if(enemy.posX == 0 && enemy.posY == 0 || enemy.posX == 1 && enemy.posY == 0 || enemy.posX == 0 && enemy.posY == 1){
+            enmy--;
+            print("proibido",enemy);
+          }else{
+            if (arrEnemies.length > 0) {
+          
           if (compareEnemy(enemy)) {
+            
+
             arrEnemies.push(enemy);
           } else {
             enmy--;
@@ -73,7 +81,9 @@ function preload(){
         } else {
           arrEnemies.push(enemy);
         }
-        print(enemy)
+          }
+        
+        print("adicionado:",enemy)
 
 
         httpPost('/insertEnemy','json',enemy,(resposta)=>{
@@ -111,7 +121,10 @@ function preload(){
           "posY":ry,
         }
         if (arrIsland.length > 0) {
-          if (compareIsland(island)) {
+          if((island.posX === 0 && island.posY === 0)||(island.posX === 1 && island.posY === 0)||(island.posX === 0 && island.posY === 1)){
+            ilh--;
+            print("proibido ilha",island);
+          }else if (compareIsland(island)) {
             arrIsland.push(island);
           } else {
             ilh--;
@@ -144,25 +157,19 @@ loadJSON('/getIsland',(dataDoServidor)=>{
   }
 
 })
-
-
-
 }
 
 function compareEnemy(enemy) {
   let flag = 0;
 
   for (let i = 0; i < arrEnemies.length; i++) {
-    if (arrEnemies[i].posX == enemy.posX && arrEnemies[i].posY == enemy.posY) {
+    if (arrEnemies[i].posX == enemy.posX && arrEnemies[i].posY == enemy.posY ) {
       flag = 1;
     } 
-    if(enemy.posX == 0 && enemy.posY == 0){
-      flag = 1;
-    } 
-    if(enemy.posX == 1 && enemy.posY == 0){
-      flag = 1;
-    } 
-    if(enemy.posX == 0 && enemy.posY == 1){
+  }
+  for (let i = 0; i < ilhasReceived.length; i++) {
+    if (ilhasReceived[i].posX == enemy.posX && ilhasReceived[i].posY == enemy.posY) {
+
       flag = 1;
     }
   }
@@ -178,18 +185,15 @@ function compareIsland(island) {
   let flag = 0;
 
   for (let i = 0; i < arrIsland.length; i++) {
-    if (arrIsland[i].posX == island.posX && arrIsland[i].posY == island.posY ) {
+    if (arrIsland[i].posX == island.posX && arrIsland[i].posY == island.posY) {
       flag = 1;
     }
-    if (island.posX === 0 && island.posY === 0){
-      flag = 1;
-    }
-    if (island.posX === 1 && island.posY === 0){
+  }
+  //print("from compareisland",arrEnemies)
+  for (let i = 0; i < enemyReceived.length; i++) {
+    if (enemyReceived[i].posX == island.posX && enemyReceived[i].posY == island.posY ) {
       flag = 1;
     } 
-    if (island.posX === 0 && island.posY === 1){
-      flag = 1;
-    }
   }
 
   if (flag == 0) {
@@ -286,18 +290,19 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
-          print("true: collision with an enemy");
+          //print("true: collision with an enemy");
+          
         }else if(compareBoatIlha(boatpos)){
-          print("true: collision with na island");
+          //print("true: collision with na island");
         }
         else{
           while(nearEnemy){
-            
-                arrTiles[bx][by].img=images[3].filter(THRESHOLD);
-               
+      
+              arrTiles[bx][by].img=images[3].filter(THRESHOLD);
+              break;
           }
-          print("false: there was no collision");
-          print(boatpos)
+          //print("false: there was no collision");
+          //print(boatpos)
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
           httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
@@ -332,9 +337,9 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
-          print("true: collision with an enemy");
+          //print("true: collision with an enemy");
         }else if(compareBoatIlha(boatpos)){
-          print("true: collision with na island");
+          //print("true: collision with na island");
         }
         else{
 
@@ -346,8 +351,8 @@ function keyPressed() {
             } */
           }
 
-          print("false: there was no collision");
-          print(boatpos)
+          //print("false: there was no collision");
+          //print(boatpos)
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
 
@@ -383,9 +388,9 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
-          print("true: collision with an enemy");
+          //print("true: collision with an enemy");
         }else if(compareBoatIlha(boatpos)){
-          print("true: collision with na island");
+          //print("true: collision with na island");
         }
         else{
 
@@ -397,8 +402,8 @@ function keyPressed() {
             } */
           }
 
-          print("false: there was no collision");
-          print(boatpos)
+          //print("false: there was no collision");
+          //print(boatpos)
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
 
@@ -434,9 +439,9 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
-          print("true: collision with an enemy");
+          //print("true: collision with an enemy");
         }else if(compareBoatIlha(boatpos)){
-          print("true: collision with na island");
+          //print("true: collision with na island");
         }
         else{
 
@@ -448,8 +453,8 @@ function keyPressed() {
             } */
           }
 
-          print("false: there was no collision");
-          print(boatpos)
+          //print("false: there was no collision");
+          //print(boatpos)
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
 
@@ -472,10 +477,13 @@ function keyPressed() {
 function compareBoatEnemy(boatpos){
   let flag = 0;
   for(let i=0; i<enemyReceived.length; i++){
-      
     if (enemyReceived[i].posX === boatpos.posX && enemyReceived[i].posY === boatpos.posY) {
-     
+      arrTiles[enemyReceived[i].posX][enemyReceived[i].posY].img=images[1];
       flag = 1;
+      
+      pontuacao=pontuacao-50;
+      pontuation(pontuacao);
+
     }
   }
   if (flag == 0) {
@@ -487,17 +495,42 @@ function compareBoatEnemy(boatpos){
 
 function compareBoatIlha(boatpos){
   let flag = 0;
+
+  
   for(let i=0; i<ilhasReceived.length; i++){
-      
     if (ilhasReceived[i].posX === boatpos.posX && ilhasReceived[i].posY === boatpos.posY) {
-      
+      arrTiles[ilhasReceived[i].posX][ilhasReceived[i].posY].img=images[0];
       flag = 1;
+      
+      pontuacao=pontuacao+100;
+      pontuation(pontuacao);
+
     }
   }
+
   if (flag == 0) {
     return false; //nao ha enemy naquela posiçao
   } else {
     return true; //há enemy naquela posiçao
+  }
+}
+
+function pontuation(pont){
+
+  pontos = {
+    "pont": pont
+  }
+  print(pontos)
+  httpDo('/addPontuacao','PUT', 'json', pontos, (res)=>{
+    print(res);
+  })
+
+  if(pont==0){
+
+    httpPost('/lostButton', 'json', pontos, (res)=>{
+      
+    })
+    print("you lost")//show button to restart the game
   }
 }
 
@@ -567,15 +600,4 @@ function nearEnemy(){
 }
 
 
-function pontuation(){
-  //Calcular a pontuação
-  //a funçao hitIsland vai devolver um 1
-  //if(hit == 1)
-  //pontuacao = pontuacao + 100;
-  //Quando chega a uma ilha aumenta a pontuação
-  
-  //a funçao hitEnemy devolve '0'
-  //if(hit == 0)
-  //Quando bate no inimigo perde pontos
-}
 

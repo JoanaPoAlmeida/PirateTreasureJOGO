@@ -42,8 +42,29 @@ app.get('/register', (req, res)=>{
     res.render('register');
 })
 app.get('/game', (req, res)=>{
+	
+	//Quando atualizar a pagina vai apagar as posiçoes ja inseridas
+	connection.query('DELETE FROM positions',(err,result)=>{
+		if(err) throw err;
+	})
+
+	//vai apagar a pontuacao anterior para começar de novo
+	connection.query('DELETE FROM pontuacao',(err,result)=>{
+		if(err) throw err;
+	})
+
+	//vai criar uma linha na tabela pontuacao com a pontuaçao inicial
+	let sql = "INSERT INTO pontuacao VALUES ('00');"
+	connection.query(sql,(err,result)=>{
+		if(err) throw err;
+	})
+
+	
+	
 	res.render('game');
 })
+
+
 
 //10 - Registo
 app.post('/register', async (req, res)=>{
@@ -287,7 +308,35 @@ app.put('/updateBoat', (req,res)=>{
 	});
 })
 
+//adicionar pontuaçao a base de dados
+app.put('/addPontuacao', (req,res)=>{
+	let pontos=req.body.pont;
+	console.log(pontos);
+	
 
+	let sql="UPDATE pontuacao SET pontos='"+pontos+"' ";
+	
+	connection.query(sql,(err,result)=>{
+		if(err) throw err;	
+	});
+
+	/* let pont = 0;
+	connection.query('SELECT pontos FROM pontuacao', (err,pontos)=>{
+		if(err) throw err;
+		pont=pontos
+
+		console.log("pontos",pont);
+		res.render('game', {pont});
+	})  */ 
+
+})
+
+app.post('/lostButton',(req, res)=>{
+	ponto=req.body.pont;
+	if(ponto==0){
+		console.log("lost:", ponto)
+	}
+})
 
 
 
@@ -300,6 +349,7 @@ app.delete('/deletePositions', (req,res) =>{
 		res.send(result);	
 	});
 })
+
 
 
 
