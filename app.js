@@ -64,6 +64,13 @@ app.get('/game', (req, res)=>{
 	res.render('game');
 })
 
+app.get('/howplay', (req, res)=>{
+    res.render('howplay');
+})
+app.get('/about', (req, res)=>{
+    res.render('about');
+})
+
 
 
 //10 - Registo
