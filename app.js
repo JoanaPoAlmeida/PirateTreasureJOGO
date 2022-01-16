@@ -129,8 +129,8 @@ app.post('/auth', async (req, res)=> {
                         alertMessage: "Incorrect user or password",
                         alertIcon:'error',
                         showConfirmButton: true,
-                        timer: false,
-                        ruta: 'login'    
+                        timer: 1500,
+                        ruta: '/login'    
                     });
 				
                 //res.send('Incorrect Username and/or Password!');				
@@ -145,7 +145,7 @@ app.post('/auth', async (req, res)=> {
 					alertIcon:'success',
 					showConfirmButton: false,
 					timer: 1500,
-					ruta: ''
+					ruta: '/'
 				});        			
 			}			
 			res.end();

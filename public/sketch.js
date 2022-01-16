@@ -5,7 +5,9 @@
 //organização mapa da jogo (em papel)
 //é necessário fazer o nível extra
 
+//const { text } = require("body-parser");
 
+//const { text } = require("body-parser");
 
 
 let pontuacao = 0;
@@ -38,14 +40,9 @@ let arrEnemies = [];
 let arrIsland = [];
 let images = [];
 
-function preload(){
+let song = [];
 
-  //delete everything in database in table positions
-  
-  /* httpDo('/deletePositions', 'DELETE', function(response){
-    print("response",response);
-  }); 
- */
+function preload(){
 
   //fazer load das imagens
   images[0]=loadImage('https://i.ibb.co/Ydh3Crs/island.png'); //ilhas
@@ -53,6 +50,13 @@ function preload(){
   images[2]=loadImage('https://i.ibb.co/K9r38JD/background.png'); //background
   images[3]=loadImage('https://i.ibb.co/vkLDdmN/boat.png'); //boat
   images[4]=loadImage('https://i.ibb.co/K5bYFsL/nuvens-1.png') //nuvens
+  images[5]=loadImage('http://localhost:3001/public/img/boatred.jpg')
+
+  //load da musica
+  song[0]= loadSound('http://localhost:3001/public/sound/ptsong.mp3');
+  song[1]= loadSound('http://localhost:3001/public/sound/fail.mp3');
+  song[2]= loadSound('http://localhost:3001/public/sound/win.wav');
+  
 
   //adicionar inimigos
   for(let enmy=0;enmy<6;enmy++){
@@ -206,6 +210,11 @@ function compareIsland(island) {
 function setup() {
   createCanvas(screenx, screeny);
 
+  song[0].play();
+  song[0].setVolume(0.3);
+  
+  
+  
 
   constructBoard();
 
@@ -217,22 +226,7 @@ function setup() {
     }
   }
 
-  if(enemyExist){
-    console.log("enemy", enemyReceived)
-    for(let x=0;x<enemyReceived.length;x++){
-
-      //arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img=images[1];
-
-    }
-  }
-  if(ilhasExist){
-    console.log("island", ilhasReceived)
-    for(let x=0;x<ilhasReceived.length;x++){
-
-      //arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img=images[0];
-      
-    }
-  }
+   
 
   arrTiles[0][0].img=images[3];
   let boatpos = {
@@ -244,12 +238,11 @@ function setup() {
   });
 
   keyPressed();
-
-  
-
-
-
 }
+
+
+
+
 
 function draw() {
   //background color
@@ -259,23 +252,17 @@ function draw() {
 
   //grid 8X8
   drawBoard();
-  
 
   
-  //nearEnemy();
-
-  //text Goal ou colocar a imagem de uma meta
-  //stroke(0);
-  //fill(150 + sin(frameCount * 0.1) * 100);
-  //stroke(0);
-  //textSize(31);
-  //text("Goal", 527, 595);
 }
 
 
 function keyPressed() {
 
+  getAudioContext().resume();
+
   if (keyCode === RIGHT_ARROW){
+    
     loadJSON('/getBoat',(dataDoServidor)=>{
 
       let boat=dataDoServidor;
@@ -290,19 +277,17 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
-          //print("true: collision with an enemy");
           
         }else if(compareBoatIlha(boatpos)){
-          //print("true: collision with na island");
+          
         }
         else{
-          while(nearEnemy){
-      
-              arrTiles[bx][by].img=images[3].filter(THRESHOLD);
-              break;
+          if(nearEnemy(boatpos)){   
+            print(nearEnemy(boatpos));  
+            arrTiles[bx][by].img=images[3].filter();
+          }else{
+            arrTiles[bx][by].img=images[3].filter();
           }
-          //print("false: there was no collision");
-          //print(boatpos)
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
           httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
@@ -321,6 +306,7 @@ function keyPressed() {
   }
 
    if (keyCode === LEFT_ARROW){
+     
     loadJSON('/getBoat',(dataDoServidor)=>{
 
       let boat=dataDoServidor;
@@ -337,22 +323,16 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
-          //print("true: collision with an enemy");
         }else if(compareBoatIlha(boatpos)){
-          //print("true: collision with na island");
         }
         else{
 
-          if(nearEnemy){
-            /* for(let x=0;x<8;x++){
-              for(let y=0;y<8;y++){
-                arrTiles[x][y].clr=191 + sin(frameCount * 0.1) * 50; //mudar para tiles com texture de nuvem
-              }
-            } */
+          if(nearEnemy(boatpos)){   
+            print(nearEnemy(boatpos));  
+            arrTiles[bx][by].img=images[3].filter();
+          }else{
+            arrTiles[bx][by].img=images[3].filter();
           }
-
-          //print("false: there was no collision");
-          //print(boatpos)
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
 
@@ -391,19 +371,24 @@ function keyPressed() {
           //print("true: collision with an enemy");
         }else if(compareBoatIlha(boatpos)){
           //print("true: collision with na island");
+        }else if(nearEnemy(boatpos)){
+          print(nearEnemy(boatpos));
+
+          
+          
+          arrTiles[bx][by].img=images[5];
+
+          httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+
+          });
+
+          by--;
+          arrTiles[bx][by].img=images[4]; //posiçao anterior para mar
         }
         else{
 
-          if(nearEnemy){
-            /* for(let x=0;x<8;x++){
-              for(let y=0;y<8;y++){
-                arrTiles[x][y].clr=191 + sin(frameCount * 0.1) * 50; //mudar para tiles com texture de nuvem
-              }
-            } */
-          }
+          bx++
 
-          //print("false: there was no collision");
-          //print(boatpos)
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
 
@@ -445,12 +430,11 @@ function keyPressed() {
         }
         else{
 
-          if(nearEnemy){
-            /* for(let x=0;x<8;x++){
-              for(let y=0;y<8;y++){
-                arrTiles[x][y].clr=191 + sin(frameCount * 0.1) * 50; //mudar para tiles com texture de nuvem
-              }
-            } */
+          if(nearEnemy(boatpos)){   
+            print(nearEnemy(boatpos));  
+            arrTiles[bx][by].img=images[3].filter();
+          }else{
+            arrTiles[bx][by].img=images[3].filter();
           }
 
           //print("false: there was no collision");
@@ -471,6 +455,21 @@ function keyPressed() {
         print("out of sketch");
       }
     })
+  }
+}
+
+function dontmove(){
+  if(keyCode=== RIGHT_ARROW){
+
+  }
+  if(keyCode === LEFT_ARROW){
+
+  }
+  if(keyCode === UP_ARROW){
+
+  }
+  if(keyCode === DOWN_ARROW){
+
   }
 }
 
@@ -525,12 +524,93 @@ function pontuation(pont){
     print(res);
   })
 
-  if(pont==0){
+  if(pont<=0){
+
+    song[0].stop();
+    song[1].play();
+    dontmove();
+    for(let x=0;x<=7;x++){
+      for(let y=0;y<=7;y++){
+        arrTiles[x][y].img=images[2];
+        arrTiles[x][y].txt="you lost";
+
+        stroke(0);
+        fill(150 + sin(frameCount * 0.2) * 100);
+        stroke(0);
+        textSize(20);
+        text("YOU LOST", x, y);
+      }
+    }
+
+    if(enemyExist){
+      console.log("enemy", enemyReceived)
+      for(let x=0;x<enemyReceived.length;x++){
+  
+        arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img=images[1];
+  
+      }
+    }
+    if(ilhasExist){
+      console.log("island", ilhasReceived)
+      for(let x=0;x<ilhasReceived.length;x++){
+  
+        arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img=images[0];
+        
+      }
+    }
+
+    loadJSON('/getBoat',(dataDoServidor)=>{
+
+      let boat=dataDoServidor;
+
+      let bx=boat[0].posX;
+      let by=boat[0].posY;
+
+      arrTiles[bx][by].img=images[3]
+
+    });
+    
+
+    text('YOU LOST', screenx/2, screeny/2);
 
     httpPost('/lostButton', 'json', pontos, (res)=>{
       
     })
     print("you lost")//show button to restart the game
+  }
+
+  if(pont>=500){
+    song[0].stop();
+    song[2].play();
+    for(let x=0;x<=7;x++){
+      for(let y=0;y<=7;y++){
+        arrTiles[x][y].img=images[2];
+        arrTiles[x][y].txt="you won";
+
+        stroke(0);
+        fill(150 + sin(frameCount * 0.2) * 100);
+        stroke(5);
+        textSize(20);
+        text("YOU WON", x, y);
+      }
+    }
+
+    if(enemyExist){
+      console.log("enemy", enemyReceived)
+      for(let x=0;x<enemyReceived.length;x++){
+  
+        arrTiles[enemyReceived[x].posX][enemyReceived[x].posY].img=images[1];
+  
+      }
+    }
+    if(ilhasExist){
+      console.log("island", ilhasReceived)
+      for(let x=0;x<ilhasReceived.length;x++){
+  
+        arrTiles[ilhasReceived[x].posX][ilhasReceived[x].posY].img=images[0];
+        
+      }
+    }
   }
 }
 
@@ -566,9 +646,11 @@ class Tile{
     this.s=s;
     this.clr="#e0d57b00";
     this.img=images[2];
+    this.txt="";
   }
  
   draw_Tile(){
+    text(this.txt,this.x, this.y);
     image(this.img,this.x,this.y,this.s,this.s);
     fill(this.clr);
     square(this.x,this.y,this.s);
@@ -577,7 +659,7 @@ class Tile{
 }
 
 
-function nearEnemy(){
+function nearEnemy(boatpos){
 
   let flag = 0;
   for(let i=0; i<enemyReceived.length; i++){
@@ -585,7 +667,7 @@ function nearEnemy(){
     bx = boatpos.posX;
     by = boatpos.posY;
 
-    if( (bx+2)== enemyReceived[i].posX || (bx-2)== enemyReceived[i].posX || (by+2)== enemyReceived[i].posY || (by-2)== enemyReceived[i].posY){
+    if( bx == enemyReceived[i].posX+1 || bx== enemyReceived[i].posX-1 || by== enemyReceived[i].posY+1 || by== enemyReceived[i].posY-1){
       flag = 1;
     }
   }
