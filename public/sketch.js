@@ -50,12 +50,12 @@ function preload(){
   images[2]=loadImage('https://i.ibb.co/K9r38JD/background.png'); //background
   images[3]=loadImage('https://i.ibb.co/vkLDdmN/boat.png'); //boat
   images[4]=loadImage('https://i.ibb.co/K5bYFsL/nuvens-1.png') //nuvens
-  images[5]=loadImage('http://localhost:3001/public/img/boatred.jpg')
+  images[5]=loadImage('http://localhost:3002/public/img/boatred.jpg')
 
   //load da musica
-  song[0]= loadSound('http://localhost:3001/public/sound/ptsong.mp3');
-  song[1]= loadSound('http://localhost:3001/public/sound/fail.mp3');
-  song[2]= loadSound('http://localhost:3001/public/sound/win.wav');
+  song[0]= loadSound('http://localhost:3002/public/sound/ptsong.mp3');
+  song[1]= loadSound('http://localhost:3002/public/sound/fail.mp3');
+  song[2]= loadSound('http://localhost:3002/public/sound/win.wav');
   
 
   //adicionar inimigos
