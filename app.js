@@ -279,6 +279,7 @@ app.put('/updateBoat', (req,res)=>{
 	let x=req.body.posX;
 	let y=req.body.posY;
 
+
 	let sql="UPDATE boat SET posX='"+x+"', posY='"+y+"';"
 	connection.query(sql,(err,result)=>{
 		if(err) throw err;	
