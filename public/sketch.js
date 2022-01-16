@@ -56,7 +56,9 @@ function preload(){
   song[0]= loadSound('http://localhost:3001/public/sound/ptsong.mp3');
   song[1]= loadSound('http://localhost:3001/public/sound/fail.mp3');
   song[2]= loadSound('http://localhost:3001/public/sound/win.wav');
-  
+  song[3]= loadSound('http://localhost:3001/public/sound/danger.mp3');
+  song[4]= loadSound('http://localhost:3001/public/sound/hitenemy.mp3');
+  song[5]= loadSound('http://localhost:3001/public/sound/hitilha.wav');
 
   //adicionar inimigos
   for(let enmy=0;enmy<6;enmy++){
@@ -210,7 +212,7 @@ function compareIsland(island) {
 function setup() {
   createCanvas(screenx, screeny);
 
-  song[0].play();
+  song[0].loop();
   song[0].setVolume(0.3);
   
   
@@ -225,6 +227,7 @@ function setup() {
       arrTiles[x][y].img=images[4];
     }
   }
+
 
    
 
@@ -253,6 +256,8 @@ function draw() {
   //grid 8X8
   drawBoard();
 
+  textSize(20);
+  text("Pontuação: "+pontuacao, 450, 20);
   
 }
 
@@ -277,17 +282,26 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
+          song[4].play();
           
         }else if(compareBoatIlha(boatpos)){
+          song[5].play();
+        }
+        else if(nearEnemy(boatpos)){
+          print(nearEnemy(boatpos));
+
+          song[3].play();
           
+          arrTiles[bx][by].img=images[3];
+          httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+
+          });
+
+          bx--;
+          arrTiles[bx][by].img=images[4]; //posiçao anterior para mar
         }
         else{
-          if(nearEnemy(boatpos)){   
-            print(nearEnemy(boatpos));  
-            arrTiles[bx][by].img=images[3].filter();
-          }else{
-            arrTiles[bx][by].img=images[3].filter();
-          }
+          
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
           httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
@@ -323,16 +337,25 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
+          song[4].play();
+          
         }else if(compareBoatIlha(boatpos)){
+          song[5].play();
+        }
+        else if(nearEnemy(boatpos)){
+          print(nearEnemy(boatpos));
+          
+          song[3].play();
+          arrTiles[bx][by].img=images[3];
+
+          httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+
+          });
+
+          bx++;
+          arrTiles[bx][by].img=images[4]; //posiçao anterior para mar
         }
         else{
-
-          if(nearEnemy(boatpos)){   
-            print(nearEnemy(boatpos));  
-            arrTiles[bx][by].img=images[3].filter();
-          }else{
-            arrTiles[bx][by].img=images[3].filter();
-          }
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
 
@@ -368,16 +391,14 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
-          //print("true: collision with an enemy");
+          song[4].play();
+          
         }else if(compareBoatIlha(boatpos)){
-          //print("true: collision with na island");
+          song[5].play();
         }else if(nearEnemy(boatpos)){
-          print(nearEnemy(boatpos));
-
           
-          
-          arrTiles[bx][by].img=images[5];
-
+          song[3].play();
+          arrTiles[bx][by].img=images[3];
           httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
 
           });
@@ -387,7 +408,7 @@ function keyPressed() {
         }
         else{
 
-          bx++
+          
 
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
@@ -424,21 +445,22 @@ function keyPressed() {
           posY:by
         }
         if(compareBoatEnemy(boatpos)){
-          //print("true: collision with an enemy");
+          song[4].play();
+          
         }else if(compareBoatIlha(boatpos)){
-          //print("true: collision with na island");
+          song[5].play();
+        }else if(nearEnemy(boatpos)){
+          
+          song[3].play();
+          arrTiles[bx][by].img=images[3];
+          httpDo('/updateBoat','PUT', 'json', boatpos, (res)=>{
+
+          });
+
+          by++;
+          arrTiles[bx][by].img=images[4]; //posiçao anterior para mar
         }
         else{
-
-          if(nearEnemy(boatpos)){   
-            print(nearEnemy(boatpos));  
-            arrTiles[bx][by].img=images[3].filter();
-          }else{
-            arrTiles[bx][by].img=images[3].filter();
-          }
-
-          //print("false: there was no collision");
-          //print(boatpos)
           arrTiles[bx][by].img=images[3]; //adicionar imagem a posiçao a seguir
 
 
@@ -662,13 +684,18 @@ class Tile{
 function nearEnemy(boatpos){
 
   let flag = 0;
+
   for(let i=0; i<enemyReceived.length; i++){
 
     bx = boatpos.posX;
     by = boatpos.posY;
 
-    if( bx == enemyReceived[i].posX+1 || bx== enemyReceived[i].posX-1 || by== enemyReceived[i].posY+1 || by== enemyReceived[i].posY-1){
+    if( (bx+1) == enemyReceived[i].posX && by == enemyReceived[i].posY || 
+        bx == enemyReceived[i].posX && by+1 == enemyReceived[i].posY ||
+        (bx-1) == enemyReceived[i].posX && by == enemyReceived[i].posY ||
+        bx == enemyReceived[i].posX && by-1 == enemyReceived[i].posY ){
       flag = 1;
+      print(boatpos, enemyReceived[i]);
     }
   }
   if (flag == 0) {
